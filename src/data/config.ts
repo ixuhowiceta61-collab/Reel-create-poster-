@@ -7,6 +7,9 @@
 export const SPONSOR_URL =
   "https://www.profitableratecpmnetwork.com/p4cytkzc0t?key=c4a7468d219e3c52d904db81d2cecb7b";
 
+export const SPONSOR_SCRIPT_URL =
+  "https://pl31362054.profitableratecpmnetwork.com/70/d6/b8/70d6b813374015d756260ca9435c056a.js";
+
 export const SPONSOR_COUNTDOWN_SECONDS = 8;
 
 export const APP_INFO = {
