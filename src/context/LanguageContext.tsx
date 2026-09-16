@@ -1,22 +1,28 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Language } from '../types';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { Language, LanguageOption } from '../types';
+import { GLOBAL_LANGUAGES, getLanguageByCode, isRtlLanguage } from '../data/languages';
 
 interface LanguageContextType {
   language: Language;
+  currentLanguage: LanguageOption;
   setLanguage: (lang: Language) => void;
   toggleLanguage: () => void;
   t: (key: string, fallback?: string) => string;
   isBn: boolean;
+  isRtl: boolean;
+  isAutoTranslating: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 // Automatically detect default language based on user location and browser settings
-function detectInitialLanguage(): Language {
+function detectInitialLanguage(): string {
   // 1. Explicit user choice stored in localStorage
   try {
-    const saved = localStorage.getItem('app_language');
-    if (saved === 'bn' || saved === 'en') {
+    const saved =
+      localStorage.getItem('reel_poster_selected_language') ||
+      localStorage.getItem('app_language');
+    if (saved && getLanguageByCode(saved)) {
       return saved;
     }
   } catch {}
@@ -34,13 +40,21 @@ function detectInitialLanguage(): Language {
     }
   } catch {}
 
-  // 3. Browser language check: Bengali speakers
+  // 3. Browser language check: check all preferred browser languages
   try {
-    const langs = navigator.languages || [navigator.language];
-    for (const lang of langs) {
-      if (lang && lang.toLowerCase().startsWith('bn')) {
-        return 'bn';
-      }
+    const userLangs = navigator.languages || [navigator.language];
+    for (const rawLang of userLangs) {
+      if (!rawLang) continue;
+      const normalized = rawLang.toLowerCase();
+      const base = normalized.split('-')[0];
+
+      // Exact match check (e.g., zh-CN)
+      const exact = GLOBAL_LANGUAGES.find((l) => l.code.toLowerCase() === normalized);
+      if (exact) return exact.code;
+
+      // Base language code check (e.g., 'es', 'ar', 'ur', 'fr', 'hi', 'bn')
+      const baseMatch = GLOBAL_LANGUAGES.find((l) => l.code.toLowerCase() === base);
+      if (baseMatch) return baseMatch.code;
     }
   } catch {}
 
@@ -48,194 +62,521 @@ function detectInitialLanguage(): Language {
   return 'en';
 }
 
-export const translations: Record<string, { bn: string; en: string }> = {
+// Function to trigger Google Translate dynamic auto-translation on the page
+function triggerGoogleTranslation(targetCode: string) {
+  try {
+    // Map code to Google Translate language format (e.g., 'zh-CN' stays 'zh-CN', otherwise base code)
+    const googleLang = targetCode === 'zh-CN' ? 'zh-CN' : targetCode.split('-')[0];
+
+    // Set cookie for Google Translate widget
+    const cookiePath = `/auto/${googleLang}`;
+    document.cookie = `googtrans=${cookiePath}; path=/;`;
+    if (typeof window !== 'undefined' && window.location.hostname) {
+      document.cookie = `googtrans=${cookiePath}; path=/; domain=${window.location.hostname};`;
+      // Also try parent domain if applicable
+      const parts = window.location.hostname.split('.');
+      if (parts.length > 2) {
+        document.cookie = `googtrans=${cookiePath}; path=/; domain=.${parts.slice(-2).join('.')};`;
+      }
+    }
+
+    // Trigger existing Google Translate combo box if initialized
+    const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
+    if (combo) {
+      combo.value = googleLang;
+      combo.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  } catch (e) {
+    console.warn('Google Translate trigger notice:', e);
+  }
+}
+
+// Rich multilingual dictionary for instant, zero-delay rendering of core UI elements
+export const translations: Record<string, Record<string, string>> = {
   // Brand & General
   'brand.name': {
     bn: 'Reel Create Poster',
     en: 'Reel Create Poster',
+    es: 'Reel Create Poster',
+    ar: 'ريل كرييت بوستر',
+    hi: 'रील क्रिएट पोस्टर',
+    ur: 'ریل کریٹ پوسٹر',
+    fr: 'Reel Create Poster',
+    de: 'Reel Create Poster',
   },
   'brand.tagline': {
     bn: 'পুরনো দিনের অনুভূতি, আজকের ভালোবাসার জন্য',
     en: 'Vintage feelings, crafted for modern love',
+    es: 'Sentimientos vintage, creados para el amor moderno',
+    ar: 'مشاعر كلاسيكية، صُنعت للحب العصري',
+    hi: 'पुराने दिनों के एहसास, आज के प्यार के लिए',
+    ur: 'پرانے دنوں کے احساسات، آج کی محبت کے لیے',
+    fr: 'Des sentiments vintage, créés pour l’amour moderne',
+    de: 'Vintage-Gefühle, geschaffen für moderne Liebe',
+    fa: 'احساسات قدیمی، ساخته شده برای عشق امروزی',
+    he: 'רגשות וינטג׳, שנוצרו לאהבה מודרנית',
   },
   'brand.description': {
     bn: 'আপনার প্রিয় মানুষটির জন্য তৈরি করুন একটি সুন্দর Vintage Poster ও প্রেমের চিঠি।',
     en: 'Craft timeless vintage love posters, 9:16 reels videos, and antique letters for your loved ones.',
+    es: 'Crea pósteres de amor vintage atemporales, videos reels 9:16 y cartas románticas antiguas.',
+    ar: 'اصنع ملصقات حب كلاسيكية خالدة، وفيديوهات ريلز 9:16، ورسائل غرامية أثرية لمن تحب.',
+    hi: 'अपने प्रियजनों के लिए विंटेज लव पोस्टर्स, 9:16 रील्स वीडियो और प्रेम पत्र तैयार करें।',
+    ur: 'اپنے پیاروں کے لیے لازوال ونٹیج محبت کے پوسٹرز، 9:16 ریلز ویڈیوز اور قدیم خطوط تیار کریں۔',
+    fr: 'Créez des affiches d’amour vintage intemporelles, des vidéos reels 9:16 et des lettres romantiques.',
+    de: 'Erstellen Sie zeitlose Vintage-Liebesposter, 9:16 Reels-Videos und antike Liebesbriefe.',
   },
 
   // Navigation Items
-  'nav.home': { bn: 'হোম', en: 'Home' },
-  'nav.reels': { bn: 'রিলস ভিডিও', en: 'Reels Video' },
-  'nav.letter': { bn: 'ভিন্টেজ প্রেমপত্র', en: 'Love Letter' },
-  'nav.create': { bn: 'পোস্টার তৈরি', en: 'Create Poster' },
-  'nav.postcards': { bn: 'পোস্টকার্ড ফ্রেম', en: 'Postcards' },
-  'nav.quotes': { bn: 'উক্তি সংগ্রহ', en: 'Romantic Quotes' },
-  'nav.gallery': { bn: 'গ্যালারি', en: 'Gallery' },
-  'nav.categories': { bn: 'ক্যাটাগরি', en: 'Categories' },
-  'nav.favorites': { bn: 'পছন্দ', en: 'Favorites' },
-  'nav.search': { bn: 'অনুসন্ধান', en: 'Search' },
-  'nav.search.placeholder': { bn: 'উক্তি, পোস্টার বা বিষয় খুঁজুন... (Ctrl+K)', en: 'Search quotes, postcards, themes... (Ctrl+K)' },
-  'nav.create.cta': { bn: 'পোস্টার তৈরি করুন', en: 'Create Poster' },
+  'nav.home': {
+    bn: 'হোম',
+    en: 'Home',
+    es: 'Inicio',
+    ar: 'الرئيسية',
+    hi: 'होम',
+    ur: 'ہوم',
+    fr: 'Accueil',
+    de: 'Startseite',
+    ja: 'ホーム',
+    ru: 'Главная',
+    tr: 'Ana Sayfa',
+    fa: 'خانه',
+    he: 'בית',
+  },
+  'nav.reels': {
+    bn: 'রিলস ভিডিও',
+    en: 'Reels Studio',
+    es: 'Estudio Reels',
+    ar: 'استوديو الريلز',
+    hi: 'रील्स स्टूडियो',
+    ur: 'ریلز اسٹوڈیو',
+    fr: 'Studio Reels',
+    de: 'Reels Studio',
+    fa: 'استودیو ریلز',
+    he: 'סטודיו רילס',
+  },
+  'nav.letter': {
+    bn: 'ভিন্টেজ প্রেমপত্র',
+    en: 'Love Letter',
+    es: 'Carta de Amor',
+    ar: 'رسالة حب كلاسيكية',
+    hi: 'प्रेम पत्र',
+    ur: 'محبت کا خط',
+    fr: 'Lettre d’amour',
+    de: 'Liebesbrief',
+    fa: 'نامه عاشقانه',
+    he: 'מכתב אהבה',
+  },
+  'nav.create': {
+    bn: 'পোস্টার তৈরি',
+    en: 'Create Poster',
+    es: 'Crear Póster',
+    ar: 'إنشاء ملصق',
+    hi: 'पोस्टर बनाएं',
+    ur: 'پوسٹر بنائیں',
+    fr: 'Créer une affiche',
+    de: 'Poster erstellen',
+    fa: 'ساخت پوستر',
+    he: 'צור פוסטר',
+  },
+  'nav.postcards': {
+    bn: 'পোস্টকার্ড ফ্রেম',
+    en: 'Postcards',
+    es: 'Postales',
+    ar: 'البطاقات البريدية',
+    hi: 'पोस्टकार्ड्स',
+    ur: 'پوسٹ کارڈز',
+    fr: 'Cartes postales',
+    de: 'Postkarten',
+    fa: 'کارت‌پستال‌ها',
+    he: 'גלויות',
+  },
+  'nav.quotes': {
+    bn: 'উক্তি সংগ্রহ',
+    en: 'Romantic Quotes',
+    es: 'Citas Románticas',
+    ar: 'اقتباسات رومانسية',
+    hi: 'रोमांटिक उद्धरण',
+    ur: 'رومانوی اقوال',
+    fr: 'Citations d’amour',
+    de: 'Romantische Zitate',
+    fa: 'نقل‌قول‌های عاشقانه',
+    he: 'ציטוטים רומנטיים',
+  },
+  'nav.gallery': {
+    bn: 'গ্যালারি',
+    en: 'Gallery',
+    es: 'Galería',
+    ar: 'المعرض',
+    hi: 'गैलरी',
+    ur: 'گیلری',
+    fr: 'Galerie',
+    de: 'Galerie',
+    ja: 'ギャラリー',
+    ru: 'Галерея',
+    tr: 'Galeri',
+    fa: 'گالری',
+    he: 'גלריה',
+  },
+  'nav.categories': {
+    bn: 'ক্যাটাগরি',
+    en: 'Categories',
+    es: 'Categorías',
+    ar: 'التصنيفات',
+    hi: 'श्रेणियां',
+    ur: 'اقسام',
+    fr: 'Catégories',
+    de: 'Kategorien',
+    fa: 'دسته‌بندی‌ها',
+    he: 'קטגוריות',
+  },
+  'nav.favorites': {
+    bn: 'পছন্দ',
+    en: 'Favorites',
+    es: 'Favoritos',
+    ar: 'المفضلة',
+    hi: 'पसंदीदा',
+    ur: 'پسندیدہ',
+    fr: 'Favoris',
+    de: 'Favoriten',
+    fa: 'علاقه‌مندی‌ها',
+    he: 'מועדפים',
+  },
+  'nav.search': {
+    bn: 'অনুসন্ধান',
+    en: 'Search',
+    es: 'Buscar',
+    ar: 'بحث',
+    hi: 'खोजें',
+    ur: 'تلاش کریں',
+    fr: 'Rechercher',
+    de: 'Suchen',
+    fa: 'جستجو',
+    he: 'חיפוש',
+  },
+  'nav.search.placeholder': {
+    bn: 'উক্তি, পোস্টার বা বিষয় খুঁজুন... (Ctrl+K)',
+    en: 'Search quotes, postcards, themes... (Ctrl+K)',
+    es: 'Buscar citas, postales, temas... (Ctrl+K)',
+    ar: 'ابحث عن الاقتباسات والبطاقات البريدية... (Ctrl+K)',
+    hi: 'उद्धरण, पोस्टकार्ड या विषय खोजें... (Ctrl+K)',
+    ur: 'اقوال، پوسٹ کارڈز یا موضوع تلاش کریں... (Ctrl+K)',
+    fr: 'Rechercher des citations, cartes, thèmes... (Ctrl+K)',
+    de: 'Zitate, Postkarten, Themen suchen... (Ctrl+K)',
+  },
+  'nav.create.cta': {
+    bn: 'পোস্টার তৈরি করুন',
+    en: 'Create Poster',
+    es: 'Crear Póster',
+    ar: 'صمم ملصقك الآن',
+    hi: 'पोस्टर तैयार करें',
+    ur: 'ابھی پوسٹر بنائیں',
+    fr: 'Créer une affiche',
+    de: 'Poster gestalten',
+    fa: 'پوستر بسازید',
+    he: 'צור פוסטר עכשיו',
+  },
 
   // Hero Section
-  'hero.archive_badge': { bn: 'ভিন্টেজ পোস্টার ও চিঠি আর্কাইভ', en: 'Vintage Poster & Letter Archive' },
-  'hero.headline.part1': { bn: '“পুরনো দিনের অনুভূতি,', en: '“Vintage Feelings,' },
-  'hero.headline.part2': { bn: 'আজকের ভালোবাসার জন্য।”', en: 'For Modern Love.”' },
+  'hero.archive_badge': {
+    bn: 'ভিন্টেজ পোস্টার ও চিঠি আর্কাইভ',
+    en: 'Vintage Poster & Letter Archive',
+    es: 'Archivo de Cartas y Pósteres Vintage',
+    ar: 'أرشيف الملصقات والرسائل الكلاسيكية',
+    hi: 'विंटेज पोस्टर और पत्र संग्रह',
+    ur: 'ونٹیج پوسٹرز اور خطوط کا آرکائیو',
+    fr: 'Archive de lettres et affiches vintage',
+    de: 'Vintage Poster & Liebesbrief-Archiv',
+  },
+  'hero.headline.part1': {
+    bn: '“পুরনো দিনের অনুভূতি,',
+    en: '“Vintage Feelings,',
+    es: '“Sentimientos Vintage,',
+    ar: '“مشاعر الأيام الخوالي،',
+    hi: '“पुराने दिनों के एहसास,',
+    ur: '“پرانے زمانوں کے احساسات،',
+    fr: '“Émotions d’autrefois,',
+    de: '“Vintage-Gefühle,',
+    fa: '“احساسات روزگاران کهن،',
+    he: '“רגשות של פעם,',
+  },
+  'hero.headline.part2': {
+    bn: 'আজকের ভালোবাসার জন্য।”',
+    en: 'For Modern Love.”',
+    es: 'Para el Amor Moderno.”',
+    ar: 'لحب العصر الحديث.”',
+    hi: 'आज के प्यार के लिए।”',
+    ur: 'آج کی سچی محبت کے لیے۔”',
+    fr: 'Pour l’amour d’aujourd’hui.”',
+    de: 'Für die moderne Liebe.”',
+    fa: 'برای عشق دوران معاصر.”',
+    he: 'לאהבה של ימינו.”',
+  },
   'hero.subheadline': {
     bn: 'আপনার মনের অপ্রকাশিত অনুভূতিগুলো রূপ দিন ১৯শ শতকের ভিন্টেজ পোস্টকার্ড, ৯:১৬ অ্যানিমেটেড রিলস ভিডিও ও হাতে লেখা প্রেমপত্রে। সম্পূর্ণ বিনামূল্যে এবং কোনো ওয়াটারমার্ক ছাড়া।',
     en: 'Turn your unspoken romantic thoughts into 19th-century vintage postcards, 9:16 vertical reels videos, and handcrafted letters. 100% free with no watermark.',
+    es: 'Transforma tus sentimientos en postales del siglo XIX, videos 9:16 para reels y cartas escritas a mano. 100% gratis y sin marcas de agua.',
+    ar: 'حول مشاعرك الرومانسية الصامتة إلى بطاقات بريدية كلاسيكية من القرن التاسع عشر، وفيديوهات ريلز عمودية 9:16، ورسائل يدوية. مجاني 100% وبدون علامة مائية.',
+    hi: 'अपनी अनकही रोमांटिक भावनाओं को 19वीं सदी के विंटेज पोस्टकार्ड्स, 9:16 रील्स और प्रेम पत्रों में बदलें। 100% मुफ्त और बिना किसी वॉटरमार्क के।',
+    ur: 'اپنے ان کہے رومانوی احساسات کو 19ویں صدی کے ونٹیج پوسٹ کارڈز، 9:16 ریلز ویڈیوز اور ہاتھ سے لکھے خطوط میں بدلیں۔ بالکل مفت اور واٹر مارک کے بغیر۔',
+    fr: 'Transformez vos pensées romantiques en cartes postales du 19ème siècle, vidéos 9:16 pour reels et lettres manuscrites. 100% gratuit et sans filigrane.',
+    de: 'Verwandeln Sie unausgesprochene Gefühle in Vintage-Postkarten des 19. Jahrhunderts, 9:16 Reels und handgeschriebene Briefe. 100% kostenlos ohne Wasserzeichen.',
   },
-  'hero.btn.create': { bn: 'পোস্টার তৈরি শুরু করুন', en: 'Start Making Poster' },
-  'hero.btn.reels': { bn: '৯:১৬ রিলস ভিডিও', en: '9:16 Reels Studio' },
-  'hero.btn.letter': { bn: 'ভিন্টেজ প্রেমপত্র', en: 'Vintage Love Letter' },
-  'hero.btn.explore': { bn: 'পোস্টকার্ড দেখুন', en: 'Explore Postcards' },
-  'hero.feat.free_hd': { bn: '১০০% ফ্রি আল্ট্রা-HD এক্সপোর্ট', en: '100% Free Ultra-HD Export' },
-  'hero.feat.no_watermark': { bn: 'কোনো ওয়াটারমার্ক নেই', en: 'No Watermark' },
-  'hero.feat.social_ready': { bn: 'ইন্সটাগ্রাম ও ফেসবুক রিলস ফ্রেন্ডলি', en: 'Instagram & Facebook Reels Ready' },
-  'hero.stat.templates': { bn: '১৬+ ভিন্টেজ ফ্রেম', en: '16+ Vintage Frames' },
-  'hero.stat.quotes': { bn: '২২+ রোমান্টিক উক্তি', en: '22+ Romantic Quotes' },
-  'hero.stat.quality': { bn: '৪K ক্রিস্প কোয়ালিটি', en: '4K Ultra Quality' },
+  'hero.btn.create': {
+    bn: 'পোস্টার তৈরি শুরু করুন',
+    en: 'Start Making Poster',
+    es: 'Comenzar a Crear',
+    ar: 'ابدأ تصميم الملصق',
+    hi: 'पोस्टर बनाना शुरू करें',
+    ur: 'پوسٹر بنانا شروع کریں',
+    fr: 'Commencer l’affiche',
+    de: 'Poster erstellen',
+    fa: 'شروع ساخت پوستر',
+    he: 'התחל לעצב פוסטר',
+  },
+  'hero.btn.reels': {
+    bn: '৯:১৬ রিলস ভিডিও',
+    en: '9:16 Reels Studio',
+    es: 'Estudio Reels 9:16',
+    ar: 'استوديو ريلز 9:16',
+    hi: '9:16 रील्स स्टूडियो',
+    ur: '9:16 ریلز اسٹوڈیو',
+    fr: 'Studio Reels 9:16',
+    de: '9:16 Reels Studio',
+    fa: 'استودیو ریلز ۹:۱۶',
+    he: 'סטודיו רילס 9:16',
+  },
+  'hero.btn.letter': {
+    bn: 'ভিন্টেজ প্রেমপত্র',
+    en: 'Vintage Love Letter',
+    es: 'Carta de Amor Vintage',
+    ar: 'رسالة غرامية قديمة',
+    hi: 'विंटेज प्रेम पत्र',
+    ur: 'قدیم رومانوی خط',
+    fr: 'Lettre d’amour vintage',
+    de: 'Vintage-Liebesbrief',
+    fa: 'نامه عاشقانه کهن',
+    he: 'מכתב אהבה עתיק',
+  },
+  'hero.btn.explore': {
+    bn: 'পোস্টকার্ড দেখুন',
+    en: 'Explore Postcards',
+    es: 'Explorar Postales',
+    ar: 'استكشف البطاقات',
+    hi: 'पोस्टकार्ड्स देखें',
+    ur: 'پوسٹ کارڈز دیکھیں',
+    fr: 'Explorer les cartes',
+    de: 'Postkarten entdecken',
+    fa: 'مشاهده کارت‌پستال‌ها',
+    he: 'גלה גלויות',
+  },
+  'hero.feat.free_hd': {
+    bn: '১০০% ফ্রি আল্ট্রা-HD এক্সপোর্ট',
+    en: '100% Free Ultra-HD Export',
+    es: 'Exportación Ultra-HD 100% Gratis',
+    ar: 'تصدير مجاني فائق الدقة 100%',
+    hi: '100% मुफ्त अल्ट्रा-HD डाउनलोड',
+    ur: '100% مفت الٹرا ایچ ڈی ایکسپورٹ',
+    fr: 'Export Ultra-HD 100% Gratuit',
+    de: '100% Kostenloser Ultra-HD Export',
+  },
+  'hero.feat.no_watermark': {
+    bn: 'কোনো ওয়াটারমার্ক নেই',
+    en: 'No Watermark',
+    es: 'Sin Marca de Agua',
+    ar: 'بدون أي علامة مائية',
+    hi: 'कोई वॉटरमार्क नहीं',
+    ur: 'کوئی واٹر مارک نہیں',
+    fr: 'Sans Filigrane',
+    de: 'Kein Wasserzeichen',
+  },
+  'hero.feat.social_ready': {
+    bn: 'ইন্সটাগ্রাম ও ফেসবুক রিলস ফ্রেন্ডলি',
+    en: 'Instagram & TikTok Reels Ready',
+    es: 'Listo para Reels de Instagram y TikTok',
+    ar: 'جاهز لمقاطع تيك توك وإنستغرام',
+    hi: 'इंस्टाग्राम और फेसबुक रील्स फ्रेंडली',
+    ur: 'انسٹاگرام اور ٹک ٹاک کے لیے موزوں',
+    fr: 'Prêt pour Instagram & TikTok',
+    de: 'Bereit für Instagram & TikTok',
+  },
 
   // Categories Section
-  'cat.title': { bn: 'অনুভূতির ক্যাটাগরি', en: 'Explore by Mood & Theme' },
-  'cat.subtitle': { bn: 'আপনার বর্তমান অনুভূতি অনুযায়ী পোস্টার ফ্রেম নির্বাচন করুন', en: 'Choose artistic frames designed around emotional moods and vintage aesthetics' },
-  'cat.view_all': { bn: 'সব ক্যাটাগরি দেখুন', en: 'View All Categories' },
-  'cat.posters_count': { bn: 'টি পোস্টার', en: 'Postcards' },
+  'cat.title': {
+    bn: 'অনুভূতির ক্যাটাগরি',
+    en: 'Explore by Mood & Theme',
+    es: 'Explorar por Emoción y Tema',
+    ar: 'استكشف حسب المزاج والموضوع',
+    hi: 'थीम और मूड के अनुसार देखें',
+    ur: 'موضوع اور احساسات کے مطابق تلاش کریں',
+    fr: 'Explorer par ambiance et thème',
+    de: 'Nach Stimmung & Thema entdecken',
+  },
+  'cat.subtitle': {
+    bn: 'আপনার বর্তমান অনুভূতি অনুযায়ী পোস্টার ফ্রেম নির্বাচন করুন',
+    en: 'Choose artistic frames designed around emotional moods and vintage aesthetics',
+    es: 'Elige marcos artísticos diseñados con estética nostálgica y emociones reales',
+    ar: 'اختر إطارات فنية مصممة بلمسات عاطفية وجماليات كلاسيكية عتيقة',
+    hi: 'अपनी भावनाओं और विंटेज सुंदरता के अनुसार फ्रेम चुनें',
+    ur: 'اپنے دلی جذبات اور ونٹیج خوبصورتی کے مطابق فریمز منتخب کریں',
+    fr: 'Choisissez des cadres artistiques selon vos émotions et l’esthétique vintage',
+    de: 'Wählen Sie künstlerische Rahmen basierend auf Emotionen und Vintage-Ästhetik',
+  },
+  'cat.view_all': {
+    bn: 'সব ক্যাটাগরি দেখুন',
+    en: 'View All Categories',
+    es: 'Ver Todas las Categorías',
+    ar: 'عرض جميع الفئات',
+    hi: 'सभी श्रेणियां देखें',
+    ur: 'تمام اقسام دیکھیں',
+    fr: 'Voir toutes les catégories',
+    de: 'Alle Kategorien anzeigen',
+  },
 
   // Featured Posters
-  'featured.title': { bn: 'জনপ্রিয় ভিন্টেজ পোস্টার ফ্রেম', en: 'Featured Vintage Postcards' },
-  'featured.subtitle': { bn: 'সবচেয়ে বেশি ব্যবহৃত প্রেম, বিরহ ও স্মৃতির নস্টালজিক ফ্রেমসমূহ', en: 'Most cherished collections of love, monsoon, and nostalgic postcards' },
-  'featured.tab.all': { bn: 'সকল ফ্রেম', en: 'All Frames' },
-  'featured.tab.popular': { bn: 'জনপ্রিয়', en: 'Popular' },
-  'featured.tab.new': { bn: 'নতুন', en: 'New Arrivals' },
-  'featured.tab.rainy': { bn: 'বৃষ্টি', en: 'Rainy' },
-  'featured.tab.romantic': { bn: 'রোমান্টিক', en: 'Romantic' },
-  'featured.tab.classic': { bn: 'ক্লাসিক', en: 'Classic' },
-  'featured.use_template': { bn: 'এই ফ্রেমে তৈরি করুন', en: 'Use This Template' },
-  'featured.explore_all': { bn: 'সব পোস্টার এক্সপ্লোর করুন', en: 'Explore All Postcards' },
-
-  // Quote Banner
-  'banner.quote': {
-    bn: '“তোমাকে পাওয়ার জন্য নয়, তোমাকে একদিন ভালোবেসেছিলাম—শুধু ভালোবাসার প্রয়োজনে।”',
-    en: '“I did not love you to possess you; I loved you simply because love needed to exist.”',
+  'featured.title': {
+    bn: 'জনপ্রিয় ভিন্টেজ পোস্টার ফ্রেম',
+    en: 'Featured Vintage Postcards',
+    es: 'Postales Vintage Destacadas',
+    ar: 'أبرز البطاقات البريدية الكلاسيكية',
+    hi: 'लोकप्रिय विंटेज पोस्टकार्ड्स',
+    ur: 'نمایاں ونٹیج پوسٹ کارڈز',
+    fr: 'Cartes postales vintage à la une',
+    de: 'Ausgewählte Vintage-Postkarten',
   },
-  'banner.author': {
-    bn: '— অমর প্রেমপত্র সংগ্রহ • REEL CREATE POSTER',
-    en: '— Eternal Love Letter Collection • REEL CREATE POSTER',
+  'featured.subtitle': {
+    bn: 'সবচেয়ে বেশি ব্যবহৃত প্রেম, বিরহ ও স্মৃতির নস্টালজিক ফ্রেমসমূহ',
+    en: 'Most cherished collections of love, monsoon, and nostalgic postcards',
+    es: 'Las colecciones más queridas de amor, nostalgia y memorias',
+    ar: 'المجموعات الأكثر تفضيلاً للحب والذكريات والحنين العاطفي',
+    hi: 'प्यार, बारिश और यादों के सबसे पसंदीदा फ्रेम्स',
+    ur: 'محبت، برسات اور یادوں کے سب سے پسندیدہ فریمز',
+    fr: 'Les collections les plus appréciées d’amour et de nostalgie',
+    de: 'Die beliebtesten Kollektionen voller Liebe und Nostalgie',
   },
-  'banner.read_more': { bn: 'আরও রোমান্টিক উক্তি পড়ুন', en: 'Read More Romantic Quotes' },
+  'featured.tab.all': { bn: 'সকল ফ্রেম', en: 'All Frames', es: 'Todos los Marcos', ar: 'كل الإطارات', hi: 'सभी फ्रेम्स', ur: 'تمام فریمز', fr: 'Tous les cadres', de: 'Alle Rahmen' },
+  'featured.tab.popular': { bn: 'জনপ্রিয়', en: 'Popular', es: 'Popular', ar: 'الأكثر شعبية', hi: 'लोकप्रिय', ur: 'مقبول', fr: 'Populaire', de: 'Beliebt' },
+  'featured.tab.new': { bn: 'নতুন', en: 'New Arrivals', es: 'Novedades', ar: 'وصل حديثاً', hi: 'नए', ur: 'نیا', fr: 'Nouveautés', de: 'Neu' },
+  'featured.tab.rainy': { bn: 'বৃষ্টি', en: 'Rainy Monsoon', es: 'Lluvia y Llovizna', ar: 'مطر وشتاء', hi: 'बरसात', ur: 'بارش', fr: 'Pluie', de: 'Regen' },
+  'featured.tab.romantic': { bn: 'রোমান্টিক', en: 'Romantic', es: 'Romántico', ar: 'رومانسي', hi: 'रोमांटिक', ur: 'رومانوی', fr: 'Romantique', de: 'Romantisch' },
+  'featured.tab.classic': { bn: 'ক্লাসিক', en: 'Classic', es: 'Clásico', ar: 'كلاسيكي', hi: 'क्लासिक', ur: 'کلاسیک', fr: 'Classique', de: 'Klassisch' },
+  'featured.use_template': { bn: 'এই ফ্রেমে তৈরি করুন', en: 'Use This Template', es: 'Usar Esta Plantilla', ar: 'استخدم هذا القالب', hi: 'यह फ्रेम चुनें', ur: 'یہ سانچہ استعمال کریں', fr: 'Utiliser ce modèle', de: 'Vorlage verwenden' },
+  'featured.explore_all': { bn: 'সব পোস্টার এক্সপ্লোর করুন', en: 'Explore All Postcards', es: 'Explorar Todas las Postales', ar: 'استكشف كافة البطاقات', hi: 'सभी पोस्टकार्ड्स देखें', ur: 'تمام پوسٹ کارڈز دیکھیں', fr: 'Tout explorer', de: 'Alle Postkarten erkunden' },
 
-  // How It Works
-  'how.eyebrow': { bn: 'সহজ ৩টি ধাপ', en: 'SIMPLE 3-STEP PROCESS' },
-  'how.title': { bn: 'কীভাবে পোস্টার তৈরি করবেন?', en: 'How to Create Your Poster?' },
-  'how.subtitle': { bn: 'কোনো জটিলতা ছাড়াই মাত্র কয়েক সেকেন্ডে আপনার মনের পোস্টকার্ড প্রস্তুত করুন', en: 'Create your emotional vintage postcard in just seconds without any hassle' },
-  'how.step1.title': { bn: '১. পোস্টার বাছুন', en: '1. Select a Template' },
-  'how.step1.desc': { bn: 'প্রেম, বিরহ, বৃষ্টি কিংবা রেট্রো থিমের শত শত প্রি-ডিজাইনড ভিন্টেজ আর্টওয়ার্ক থেকে আপনার পছন্দের ফ্রেমটি নির্বাচন করুন।', en: 'Choose from handcrafted vintage artworks spanning love, rainy nostalgia, letter, and retro aesthetics.' },
-  'how.step2.title': { bn: '২. উক্তি নির্বাচন বা লিখুন', en: '2. Personalize Words' },
-  'how.step2.desc': { bn: 'প্রস্তুত করা রোমান্টিক উক্তি বেছে নিন অথবা নিজের মনের অব্যক্ত কথা, প্রাপক ও প্রেরকের নাম যুক্ত করে ফন্ট সাজান।', en: 'Pick a famous romantic quote or type your heartfelt message, recipient name, sender note, and date.' },
-  'how.step3.title': { bn: '৩. ফ্রি HD ডাউনলোড', en: '3. Instant Free Download' },
-  'how.step3.desc': { bn: 'স্পন্সর দেখে কয়েক সেকেন্ডের মধ্যে ক্রিস্প আল্ট্রা-HD রেজোলিউশনে ওয়াটারমার্কহীন পোস্টকার্ড ডাউনলোড করে প্রিয়জনকে পাঠান।', en: 'Unlock crystal clear 4K Ultra-HD resolution with no watermark and send it to your loved one.' },
-
-  // Generator Studio
-  'gen.tab.image': { bn: 'পোস্টার ইমেজ', en: 'Photo Poster' },
-  'gen.tab.reels': { bn: '৯:১৬ রিলস ভিডিও', en: '9:16 Reels Video' },
-  'gen.tab.letter': { bn: 'ভিন্টেজ প্রেমপত্র', en: 'Vintage Love Letter' },
-  'gen.choose_template': { bn: 'টেমপ্লেট নির্বাচন', en: 'Select Template' },
-  'gen.recipient': { bn: 'প্রাপক (To)', en: 'Recipient (To)' },
-  'gen.recipient.placeholder': { bn: 'যেমন: প্রিয়তমা / প্রিয় নীলা', en: 'e.g., My Love / Dearest' },
-  'gen.quote': { bn: 'মনের কথা বা উক্তি', en: 'Quote or Message' },
-  'gen.quote.placeholder': { bn: 'আপনার মনের না বলা কথা এখানে লিখুন...', en: 'Write your heartfelt vintage words here...' },
-  'gen.sender': { bn: 'প্রেরক (From)', en: 'Sender (From)' },
-  'gen.sender.placeholder': { bn: 'যেমন: ইতি, তোমার আমি', en: 'e.g., Yours Forever' },
-  'gen.date': { bn: 'তারিখ / ঋতু', en: 'Date / Season' },
-  'gen.date.placeholder': { bn: 'যেমন: শ্রাবণ, ১৩৩২ / বাদল দিন', en: 'e.g., Autumn, 1952 / Rainy Evening' },
-  'gen.browse_quotes': { bn: 'উক্তি সংগ্রহ থেকে বেছে নিন', en: 'Browse Quotes Library' },
-  'gen.typography': { bn: 'ফন্ট ও টাইপোগ্রাফি', en: 'Typography & Style' },
-  'gen.borders': { bn: 'বর্ডার স্টাইল', en: 'Border Style' },
-  'gen.filters': { bn: 'ভিন্টেজ ইফেক্ট', en: 'Vintage Texture Filter' },
-  'gen.aspect_ratio': { bn: 'আকার ও অনুপাত', en: 'Aspect Ratio' },
-  'gen.download_btn': { bn: 'HD পোস্টার ডাউনলোড করুন', en: 'Download Ultra-HD Poster' },
-  'gen.exporting': { bn: 'পোস্টার তৈরি হচ্ছে...', en: 'Exporting High-Res Poster...' },
-  'gen.reels.audio': { bn: 'ব্যাকগ্রাউন্ড মিউজিক', en: 'Background Music' },
-  'gen.reels.export': { bn: 'রিলস ভিডিও এক্সপোর্ট', en: 'Export Reels Video' },
+  // Generator & Download
+  'gen.tab.image': { bn: 'পোস্টার ইমেজ', en: 'Photo Poster', es: 'Póster de Foto', ar: 'ملصق الصور', hi: 'फोटो पोस्टर', ur: 'تصویری پوسٹر', fr: 'Affiche Photo', de: 'Foto-Poster' },
+  'gen.tab.reels': { bn: '৯:১৬ রিলস ভিডিও', en: '9:16 Reels Video', es: 'Video Reels 9:16', ar: 'فيديو ريلز 9:16', hi: '9:16 रील्स वीडियो', ur: '9:16 ریلز ویڈیو', fr: 'Vidéo Reels 9:16', de: '9:16 Reels Video' },
+  'gen.tab.letter': { bn: 'ভিন্টেজ প্রেমপত্র', en: 'Vintage Love Letter', es: 'Carta de Amor Vintage', ar: 'رسالة حب قديمة', hi: 'विंटेج प्रेम पत्र', ur: 'ونٹیج محبت کا خط', fr: 'Lettre d’amour vintage', de: 'Vintage-Liebesbrief' },
+  'gen.choose_template': { bn: 'টেমপ্লেট নির্বাচন', en: 'Select Template', es: 'Seleccionar Plantilla', ar: 'اختر القالب', hi: 'टेम्पलेट चुनें', ur: 'سانچہ منتخب کریں', fr: 'Choisir un modèle', de: 'Vorlage wählen' },
+  'gen.recipient': { bn: 'প্রাপক (To)', en: 'Recipient (To)', es: 'Destinatario (Para)', ar: 'المستلم (إلى)', hi: 'पाने वाला (To)', ur: 'نام وصول کنندہ (بنام)', fr: 'Destinataire (À)', de: 'Empfänger (An)' },
+  'gen.quote': { bn: 'মনের কথা বা উক্তি', en: 'Quote or Message', es: 'Cita o Mensaje', ar: 'الرسالة أو الاقتباس', hi: 'संदेश या उद्धरण', ur: 'دلی پیغام یا قول', fr: 'Message ou Citation', de: 'Botschaft oder Zitat' },
+  'gen.sender': { bn: 'প্রেরক (From)', en: 'Sender (From)', es: 'Remitente (De)', ar: 'المرسل (من)', hi: 'भेजने वाला (From)', ur: 'نام بھیجنے والا (از طرف)', fr: 'Expéditeur (De)', de: 'Absender (Von)' },
+  'gen.date': { bn: 'তারিখ / ঋতু', en: 'Date / Season', es: 'Fecha / Estación', ar: 'التاريخ / الفصل', hi: 'तारीख / मौसम', ur: 'تاریخ / موسم', fr: 'Date / Saison', de: 'Datum / Jahreszeit' },
+  'gen.browse_quotes': { bn: 'উক্তি সংগ্রহ থেকে বেছে নিন', en: 'Browse Quotes Library', es: 'Explorar Biblioteca de Citas', ar: 'تصفح مكتبة الاقتباسات', hi: 'उद्धरण लाइब्रेरी से चुनें', ur: 'اقوال کی لائبریری سے منتخب کریں', fr: 'Parcourir les citations', de: 'Zitate-Bibliothek durchsuchen' },
+  'gen.download_btn': { bn: 'HD পোস্টার ডাউনলোড করুন', en: 'Download Ultra-HD Poster', es: 'Descargar Póster Ultra-HD', ar: 'تحميل الملصق بجودة فائقة', hi: 'अल्ट्रा-HD पोस्टर डाउनलोड करें', ur: 'الٹرا ایچ ڈی پوسٹر ڈاؤن لوڈ کریں', fr: 'Télécharger l’affiche Ultra-HD', de: 'Ultra-HD Poster herunterladen' },
 
   // Download Gate Modal
-  'gate.title': { bn: 'আল্ট্রা-HD ওয়াটারমার্কহীন ডাউনলোড', en: 'Ultra-HD No-Watermark Download' },
-  'gate.subtitle': { bn: 'বিনামূল্যে হাই-রেজোলিউশন পোস্টার পেতে নিচের স্পন্সর বাটনে ক্লিক করুন', en: 'Click the sponsor button below to unlock free high-resolution download' },
-  'gate.btn.unlock': { bn: 'স্পন্সর ওপেন করে ডাউনলোড আনলক করুন (৮ সেকেন্ড)', en: 'Open Sponsor to Unlock Download (8s)' },
-  'gate.countdown': { bn: 'সেকেন্ড অপেক্ষা করুন...', en: 'seconds remaining...' },
-  'gate.btn.ready': { bn: 'এখনই আল্ট্রা-HD ডাউনলোড করুন', en: 'Download Ultra-HD Now' },
-  'gate.format.png': { bn: 'ক্রিস্প PNG (উচ্চমান)', en: 'Crisp PNG (Recommended)' },
-  'gate.format.jpeg': { bn: 'স্ট্যান্ডার্ড JPEG', en: 'Standard JPEG' },
+  'gate.title': { bn: 'আল্ট্রা-HD ওয়াটারমার্কহীন ডাউনলোড', en: 'Ultra-HD No-Watermark Download', es: 'Descarga Ultra-HD sin Marcas', ar: 'تحميل فائق الدقة بدون علامة مائية', hi: 'अल्ट्रा-HD वॉटरमार्क-मुक्त डाउनलोड', ur: 'الٹرا ایچ ڈی بغیر واٹر مارک ڈاؤن لوڈ', fr: 'Téléchargement Ultra-HD sans filigrane', de: 'Ultra-HD Download ohne Wasserzeichen' },
+  'gate.btn.ready': { bn: 'এখনই আল্ট্রা-HD ডাউনলোড করুন', en: 'Download Ultra-HD Now', es: 'Descargar Ultra-HD Ahora', ar: 'حمل بجودة فائقة الآن', hi: 'अभी डाउनलोड करें', ur: 'ابھی الٹرا ایچ ڈی ڈاؤن لوڈ کریں', fr: 'Télécharger maintenant', de: 'Jetzt herunterladen' },
 
-  // Postcards Library Page
-  'library.title': { bn: 'ভিন্টেজ পোস্টকার্ড লাইব্রেরি', en: 'Vintage Postcards Library' },
-  'library.subtitle': { bn: 'সকল নস্টালজিক পোস্টকার্ডের সংগ্রহশালা। যেকোনো ফ্রেম দিয়ে তৈরি করুন আপনার ভালোবাসার ছবি।', en: 'Browse our complete nostalgic archive. Choose any frame to create your romantic artwork.' },
-  'library.search': { bn: 'নাম বা ট্যাগ দিয়ে পোস্টকার্ড খুঁজুন...', en: 'Search postcards by title, tags or theme...' },
+  // Library & Pages
+  'library.title': { bn: 'ভিন্টেজ পোস্টকার্ড লাইব্রেরি', en: 'Vintage Postcards Library', es: 'Biblioteca de Postales Vintage', ar: 'مكتبة البطاقات البريدية الكلاسيكية', hi: 'विंटेج पोस्टकार्ड लाइब्रेरी', ur: 'ونٹیج پوسٹ کارڈز لائبریری', fr: 'Bibliothèque de cartes postales vintage', de: 'Vintage-Postkarten-Bibliothek' },
+  'quotes.title': { bn: 'অমর রোমান্টিক উক্তি সংগ্রহ', en: 'Romantic Quotes Collection', es: 'Colección de Citas Románticas', ar: 'مجموعة الاقتباسات الرومانسية الخالدة', hi: 'अमर रोमांटिक उद्धरण संग्रह', ur: 'لازوال رومانوی اقوال کا مجموعہ', fr: 'Citations d’amour éternelles', de: 'Ewige romantische Zitate' },
+  'quotes.use_quote': { bn: 'পোস্টারে ব্যবহার করুন', en: 'Use in Poster', es: 'Usar en Póster', ar: 'استخدم في الملصق', hi: 'पोस्टर में उपयोग करें', ur: 'پوسٹر میں استعمال کریں', fr: 'Utiliser dans l’affiche', de: 'Im Poster verwenden' },
+  'quotes.copied': { bn: 'কপি করা হয়েছে!', en: 'Copied to Clipboard!', es: '¡Copiado!', ar: 'تم النسخ بنجاح!', hi: 'कॉपी हो गया!', ur: 'کاپی ہو گیا!', fr: 'Copié !', de: 'Kopiert!' },
+  'gallery.title': { bn: 'ভিন্টেজ ভালোবাসার গ্যালারি', en: 'Vintage Love Gallery', es: 'Galería de Amor Vintage', ar: 'معرض الحب الكلاسيكي', hi: 'विंटेج लव गैलरी', ur: 'ونٹیج لو گیلری', fr: 'Galerie d’amour vintage', de: 'Vintage-Liebesgalerie' },
+  'categories.title': { bn: 'সকল ক্যাটাগরি', en: 'All Categories', es: 'Todas las Categorías', ar: 'جميع التصنيفات', hi: 'सभी श्रेणियां', ur: 'تمام اقسام', fr: 'Toutes les catégories', de: 'Alle Kategorien' },
+  'favorites.title': { bn: 'আপনার পছন্দের তালিকা', en: 'Your Saved Favorites', es: 'Tus Favoritos Guardados', ar: 'قائمتك المفضلة', hi: 'आपकी पसंदीदा सूची', ur: 'آپ کی پسندیدہ فہرست', fr: 'Vos Favoris Enregistrés', de: 'Ihre Gespeicherten Favoriten' },
 
-  // Quotes Library Page
-  'quotes.title': { bn: 'অমর রোমান্টিক উক্তি সংগ্রহ', en: 'Romantic Quotes Collection' },
-  'quotes.subtitle': { bn: 'প্রেম, বিরহ, বৃষ্টি ও স্মৃতিময় ভালোবাসার হৃদয়ছোঁয়া উক্তি। যেকোনো উক্তি সরাসরি আপনার পোস্টারে ব্যবহার করুন।', en: 'Heartfelt quotes of timeless love, monsoon, and separation. Use any quote directly on your poster.' },
-  'quotes.search': { bn: 'উক্তি বা লেখক খুঁজুন...', en: 'Search quotes or authors...' },
-  'quotes.use_quote': { bn: 'পোস্টারে ব্যবহার করুন', en: 'Use in Poster' },
-  'quotes.copied': { bn: 'কপি করা হয়েছে!', en: 'Copied to Clipboard!' },
-  'quotes.copy': { bn: 'কপি করুন', en: 'Copy Quote' },
-
-  // Gallery Page
-  'gallery.title': { bn: 'ভিন্টেজ ভালোবাসার গ্যালারি', en: 'Vintage Love Gallery' },
-  'gallery.subtitle': { bn: 'ঐতিহাসিক প্রেমপত্র, বৃষ্টি ও স্টেশনের স্মৃতিবিজড়িত নির্বাচিত আর্টওয়ার্ক প্রদর্শনী।', en: 'Curated showcase of historical love letters, rain showers, and nostalgic platform memories.' },
-
-  // Categories Page
-  'categories.title': { bn: 'সকল ক্যাটাগরি', en: 'All Categories' },
-  'categories.subtitle': { bn: 'আপনার অনুভূতির সাথে মেলানো পোস্টার থিম খুঁজে নিন', en: 'Discover poster themes matched directly to your current emotional feeling' },
-
-  // Favorites Page
-  'favorites.title': { bn: 'আপনার পছন্দের তালিকা', en: 'Your Saved Favorites' },
-  'favorites.subtitle': { bn: 'আপনার বুকমার্ক করা পোস্টকার্ড ও রোমান্টিক উক্তি', en: 'Your bookmarked postcards, quotes, and gallery items' },
-  'favorites.empty': { bn: 'কোনো প্রিয় আইটেম সেভ করা নেই', en: 'No favorite items saved yet' },
-  'favorites.explore_btn': { bn: 'পোস্টকার্ড দেখতে যান', en: 'Explore Postcards' },
-
-  // Footer & Legal
-  'footer.quick_links': { bn: 'প্রয়োজনীয় লিংক', en: 'Quick Links' },
-  'footer.categories': { bn: 'ক্যাটাগরি', en: 'Categories' },
-  'footer.legal': { bn: 'আইনি তথ্য', en: 'Legal & Info' },
-  'footer.privacy': { bn: 'প্রাইভেসি পলিসি', en: 'Privacy Policy' },
-  'footer.terms': { bn: 'ব্যবহারের শর্তাবলি', en: 'Terms of Service' },
-  'footer.contact': { bn: 'যোগাযোগ', en: 'Contact Us' },
-  'footer.copyright': {
-    bn: '© ২০২৬ Reel Create Poster. সর্বস্বত্ব সংরক্ষিত। পুরনো দিনের ভালোবাসা ও স্মৃতির জন্য নিবেদিত।',
-    en: '© 2026 Reel Create Poster. All rights reserved. Dedicated to vintage romance and cherished memories.',
-  },
+  // Lang Dropdown labels
+  'lang.select_title': { bn: 'ভাষা নির্বাচন করুন', en: 'Select Language', es: 'Seleccionar Idioma', ar: 'اختر اللغة', hi: 'भाषा चुनें', ur: 'زبان منتخب کریں', fr: 'Choisir la langue', de: 'Sprache wählen' },
+  'lang.search_placeholder': { bn: 'ভাষা খুঁজুন (যেমন: Spanish, Arabic)...', en: 'Search language (e.g. Spanish, Arabic)...', es: 'Buscar idioma...', ar: 'ابحث عن لغة...', hi: 'भाषा खोजें...', ur: 'زبان تلاش کریں...', fr: 'Rechercher une langue...', de: 'Sprache suchen...' },
+  'lang.auto_detected': { bn: 'স্বয়ংক্রিয় সনাক্তকরণ', en: 'Auto-Detected', es: 'Detectado Automáticamente', ar: 'تم الكشف التلقائي', hi: 'स्वतः पहचानी गई', ur: 'خودکار شناخت شدہ', fr: 'Détecté automatiquement', de: 'Automatisch erkannt' },
+  'lang.all_tab': { bn: 'সকল ভাষা', en: 'All Languages', es: 'Todos los Idiomas', ar: 'كل اللغات', hi: 'सभी भाषाएं', ur: 'تمام زبانیں', fr: 'Toutes les langues', de: 'Alle Sprachen' },
+  'lang.popular_tab': { bn: 'জনপ্রিয়', en: 'Popular', es: 'Populares', ar: 'الشائعة', hi: 'लोकप्रिय', ur: 'مقبول', fr: 'Populaires', de: 'Beliebt' },
+  'lang.rtl_tab': { bn: 'RTL ভাষা', en: 'RTL (Right-to-Left)', es: 'RTL (Derecha a Izquierda)', ar: 'لغات اليمين لليسار (RTL)', hi: 'RTL भाषाएं', ur: 'دائیں سے بائیں (RTL)', fr: 'Langues RTL', de: 'RTL-Sprachen' },
+  'lang.translating': { bn: 'অনুবাদ করা হচ্ছে...', en: 'Translating page...', es: 'Traduciendo página...', ar: 'جارٍ ترجمة الصفحة...', hi: 'पृष्ठ अनुवादित हो रहा है...', ur: 'صفحہ کا ترجمہ کیا جا رہا ہے...', fr: 'Traduction de la page...', de: 'Seite wird übersetzt...' },
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(detectInitialLanguage);
+  const [language, setLanguageState] = useState<string>(detectInitialLanguage);
+  const [isAutoTranslating, setIsAutoTranslating] = useState<boolean>(false);
 
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
+  const currentLanguage = getLanguageByCode(language) || {
+    code: language,
+    name: language.toUpperCase(),
+    nativeName: language.toUpperCase(),
+    flag: '🌐',
+    isRtl: isRtlLanguage(language),
+    popular: true,
+  };
+
+  const isRtl = isRtlLanguage(language);
+
+  // Apply language, RTL direction, and persistence
+  const applyLanguage = useCallback((newLangCode: string, triggerAutoTranslate = true) => {
+    setLanguageState(newLangCode);
+
+    // 1. Persistent choice in localStorage
     try {
-      localStorage.setItem('app_language', lang);
+      localStorage.setItem('reel_poster_selected_language', newLangCode);
+      localStorage.setItem('app_language', newLangCode);
     } catch {}
-    // Update HTML lang attribute for accessibility and SEO
+
+    // 2. DOM & RTL configuration
+    const rtl = isRtlLanguage(newLangCode);
     if (typeof document !== 'undefined') {
-      document.documentElement.lang = lang;
+      document.documentElement.lang = newLangCode;
+      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+      document.body.dir = rtl ? 'rtl' : 'ltr';
+
+      if (rtl) {
+        document.documentElement.classList.add('rtl-mode');
+      } else {
+        document.documentElement.classList.remove('rtl-mode');
+      }
     }
+
+    // 3. Dynamic Auto-translation
+    if (triggerAutoTranslate) {
+      setIsAutoTranslating(true);
+      triggerGoogleTranslation(newLangCode);
+      setTimeout(() => setIsAutoTranslating(false), 800);
+    }
+  }, []);
+
+  const setLanguage = (lang: string) => {
+    applyLanguage(lang, true);
   };
 
   const toggleLanguage = () => {
+    // Quick toggle between BN and EN
     setLanguage(language === 'bn' ? 'en' : 'bn');
   };
 
+  // Synchronize on mount and handle initial auto-detected language
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = language;
+    applyLanguage(language, false);
+
+    // If initial language is neither 'bn' nor 'en', trigger translation once document is ready
+    if (language !== 'bn' && language !== 'en') {
+      const timer = setTimeout(() => {
+        triggerGoogleTranslation(language);
+      }, 1000);
+      return () => clearTimeout(timer);
     }
-  }, [language]);
+  }, []);
 
   const t = (key: string, fallback?: string): string => {
     const entry = translations[key];
     if (entry) {
-      return entry[language] || fallback || entry.bn;
+      // 1. Exact match (e.g. 'zh-CN')
+      if (entry[language]) return entry[language];
+      // 2. Base code match (e.g. 'es', 'ar', 'ur')
+      const base = language.toLowerCase().split('-')[0];
+      if (entry[base]) return entry[base];
+      // 3. English or Bengali default fallback
+      return entry.en || entry.bn || fallback || key;
     }
     return fallback || key;
   };
@@ -244,10 +585,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     <LanguageContext.Provider
       value={{
         language,
+        currentLanguage,
         setLanguage,
         toggleLanguage,
         t,
         isBn: language === 'bn',
+        isRtl,
+        isAutoTranslating,
       }}
     >
       {children}

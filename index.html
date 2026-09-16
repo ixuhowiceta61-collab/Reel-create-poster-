@@ -41,10 +41,10 @@
     <meta name="twitter:image" content="https://reel-create-poster.vercel.app/logo.png" />
     <meta name="twitter:image:alt" content="Reel Create Poster - Vintage Poster Generator Logo" />
 
-    <!-- Google Fonts for Bengali & Vintage Typography -->
+    <!-- Google Fonts for Bengali, Arabic & Vintage Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Galada&family=Noto+Serif+Bengali:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Anek+Bangla:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Galada&family=Noto+Serif+Bengali:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet" />
 
     <!-- Schema.org Structured Data (JSON-LD) for WebSite and ImageGallery -->
     <script type="application/ld+json">
@@ -132,6 +132,23 @@
     <script src="https://pl31362054.profitableratecpmnetwork.com/70/d6/b8/70d6b813374015d756260ca9435c056a.js"></script>
   </head>
   <body class="bg-[#0e0a08] text-[#f4ecd8] selection:bg-[#722f37] selection:text-[#fceddb] antialiased">
+    <!-- Hidden Google Translate Container for Dynamic Page Translation -->
+    <div id="google_translate_element" style="display:none !important; position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);"></div>
+    <script type="text/javascript">
+      window.googleTranslateElementInit = function() {
+        try {
+          new window.google.translate.TranslateElement({
+            pageLanguage: 'en',
+            autoDisplay: false,
+            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        } catch (e) {
+          console.warn('TranslateElement init exception', e);
+        }
+      };
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

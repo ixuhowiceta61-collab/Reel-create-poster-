@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ActivePage } from '../types';
 import { getFavorites } from '../utils/favorites';
-import { Heart, Sparkles, Search, Menu, X, Image as ImageIcon, BookOpen, Layers, Home, Mail, Video, Feather } from 'lucide-react';
+import { Heart, Sparkles, Search, Menu, X, Image as ImageIcon, BookOpen, Home, Mail, Video, Feather } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { LanguageToggle } from './LanguageToggle';
+import { LanguageSelector } from './LanguageSelector';
 
 interface NavbarProps {
   activePage: ActivePage;
@@ -77,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activePage === item.id;
-              const label = language === 'bn' ? item.labelBn : item.labelEn;
+              const label = t(`nav.${item.id}`, language === 'bn' ? item.labelBn : item.labelEn);
               return (
                 <button
                   key={item.id}
@@ -105,8 +105,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Action Icons & Primary CTA */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher (BN | EN) */}
-            <LanguageToggle />
+            {/* Global Language Selector Dropdown */}
+            <LanguageSelector />
 
             {/* Global Search Button */}
             <button
@@ -153,16 +153,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="lg:hidden bg-[#16110f] border-b border-[#3b2d24] px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-4 duration-200">
           <div className="flex items-center justify-between pb-2 border-b border-[#2d2119]">
             <span className="text-xs text-[#a39281]">
-              {language === 'bn' ? 'ভাষা পরিবর্তন করুন:' : 'Language:'}
+              {t('lang.select_title')}:
             </span>
-            <LanguageToggle />
+            <LanguageSelector />
           </div>
 
           <div className="grid grid-cols-2 gap-2 mb-3">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activePage === item.id;
-              const label = language === 'bn' ? item.labelBn : item.labelEn;
+              const label = t(`nav.${item.id}`, language === 'bn' ? item.labelBn : item.labelEn);
               return (
                 <button
                   key={item.id}

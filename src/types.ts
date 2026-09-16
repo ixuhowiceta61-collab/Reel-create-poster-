@@ -36,7 +36,17 @@ export interface AspectRatioConfig {
   icon: string;
 }
 
-export type Language = 'bn' | 'en';
+export type Language = string;
+
+export interface LanguageOption {
+  code: string;
+  name: string;
+  nativeName: string;
+  flag: string;
+  isRtl?: boolean;
+  region?: string;
+  popular?: boolean;
+}
 
 export interface PostcardTemplate {
   id: string;

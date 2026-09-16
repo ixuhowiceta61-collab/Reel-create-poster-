@@ -1,1 +1,75 @@
 @import "tailwindcss";
+
+/* -------------------------------------------------------------------------- */
+/* Google Translate Banner & Bar Suppression (Preserve Vintage Aesthetic)     */
+/* -------------------------------------------------------------------------- */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+.skiptranslate {
+  display: none !important;
+}
+
+#google_translate_element,
+.goog-te-gadget {
+  display: none !important;
+  font-size: 0 !important;
+}
+
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* RTL (Right-to-Left) Typography & Layout Rules                              */
+/* -------------------------------------------------------------------------- */
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+/* Arabic / Urdu vintage font preference when in RTL mode */
+html[dir="rtl"] .font-serif,
+html[dir="rtl"] .font-bengali {
+  font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Noto Naskh Arabic', 'Noto Serif', serif;
+}
+
+/* Icons or chevron arrows that should flip in RTL */
+html[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* Custom scrollbars for language dropdown */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #140d0a;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3e2e25;
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #5d4538;
+}
