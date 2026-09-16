@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ActivePage } from '../types';
 import { getFavorites } from '../utils/favorites';
 import { Heart, Sparkles, Search, Menu, X, Image as ImageIcon, BookOpen, Layers, Home, Mail, Video, Feather } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageToggle } from './LanguageToggle';
 
 interface NavbarProps {
   activePage: ActivePage;
@@ -16,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(0);
+  const { language, t } = useLanguage();
 
   const updateFavoriteCount = () => {
     const p = getFavorites('postcards').length;
@@ -64,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Reel Create Poster
               </span>
               <p className="text-[11px] sm:text-xs text-[#c9b79c] font-bengali tracking-wide line-clamp-1">
-                পুরনো দিনের অনুভূতি, আজকের ভালোবাসার জন্য
+                {t('brand.tagline')}
               </p>
             </div>
           </button>
@@ -74,6 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activePage === item.id;
+              const label = language === 'bn' ? item.labelBn : item.labelEn;
               return (
                 <button
                   key={item.id}
@@ -86,7 +90,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? 'text-[#d4af37]' : 'text-[#a39281]'}`} />
-                  <span className="font-bengali text-[15px]">{item.labelBn}</span>
+                  <span className={`${language === 'bn' ? 'font-bengali' : 'font-sans'} text-[15px]`}>
+                    {label}
+                  </span>
                   {Boolean(item.badge && item.badge > 0) && (
                     <span className="ml-1 px-1.5 py-0.2 bg-[#8b263e] text-[#fef3c7] text-[11px] font-bold rounded-full border border-[#fef08a]/30">
                       {item.badge}
@@ -98,17 +104,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Action Icons & Primary CTA */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language Switcher (BN | EN) */}
+            <LanguageToggle />
+
             {/* Global Search Button */}
             <button
               id="navbar-search-btn"
               onClick={onOpenSearch}
-              className="p-2.5 rounded-lg text-[#dfd4c0] hover:text-[#fef08a] hover:bg-[#201814] border border-[#342820] hover:border-[#d4af37]/40 transition-all cursor-pointer flex items-center gap-1.5 text-xs"
-              title="উক্তি বা পোস্টার খুঁজুন"
+              className="p-2 sm:p-2.5 rounded-lg text-[#dfd4c0] hover:text-[#fef08a] hover:bg-[#201814] border border-[#342820] hover:border-[#d4af37]/40 transition-all cursor-pointer flex items-center gap-1.5 text-xs"
+              title={language === 'bn' ? 'উক্তি বা পোস্টার খুঁজুন' : 'Search quotes or postcards'}
               aria-label="Search"
             >
               <Search className="w-4 h-4 text-[#d4af37]" />
-              <span className="hidden md:inline text-[#a39281]">অনুসন্ধান</span>
+              <span className="hidden xl:inline text-[#a39281]">{t('nav.search')}</span>
               <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] bg-[#241a15] text-[#8c7b6c] rounded border border-[#3f3128]">
                 Ctrl K
               </kbd>
@@ -118,10 +127,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="navbar-create-poster-cta"
               onClick={() => handleNavClick('create')}
-              className="relative group overflow-hidden px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#802a32] via-[#942938] to-[#591b22] text-[#fef9c3] font-semibold text-sm border border-[#d4af37]/40 shadow-lg shadow-[#802a32]/25 hover:shadow-[#d4af37]/20 hover:border-[#d4af37] transition-all duration-300 flex items-center gap-2 cursor-pointer"
+              className="relative group overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-gradient-to-r from-[#802a32] via-[#942938] to-[#591b22] text-[#fef9c3] font-semibold text-sm border border-[#d4af37]/40 shadow-lg shadow-[#802a32]/25 hover:shadow-[#d4af37]/20 hover:border-[#d4af37] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-[#fef08a] animate-pulse" />
-              <span className="font-bengali text-[15px]">পোস্টার তৈরি করুন</span>
+              <span className={`${language === 'bn' ? 'font-bengali' : 'font-sans'} text-xs sm:text-[15px]`}>
+                {t('nav.create.cta')}
+              </span>
             </button>
 
             {/* Mobile Hamburger Toggle */}
@@ -139,11 +150,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Navigation */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#16110f] border-b border-[#3b2d24] px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-4 duration-200">
+        <div className="lg:hidden bg-[#16110f] border-b border-[#3b2d24] px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-4 duration-200">
+          <div className="flex items-center justify-between pb-2 border-b border-[#2d2119]">
+            <span className="text-xs text-[#a39281]">
+              {language === 'bn' ? 'ভাষা পরিবর্তন করুন:' : 'Language:'}
+            </span>
+            <LanguageToggle />
+          </div>
+
           <div className="grid grid-cols-2 gap-2 mb-3">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activePage === item.id;
+              const label = language === 'bn' ? item.labelBn : item.labelEn;
               return (
                 <button
                   key={item.id}
@@ -156,7 +175,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? 'text-[#d4af37]' : 'text-[#a39281]'}`} />
-                  <span className="font-bengali font-medium flex-1">{item.labelBn}</span>
+                  <span className={`${language === 'bn' ? 'font-bengali' : 'font-sans'} font-medium flex-1`}>
+                    {label}
+                  </span>
                   {Boolean(item.badge && item.badge > 0) && (
                     <span className="px-1.5 py-0.5 bg-[#8b263e] text-[#fef3c7] text-[10px] font-bold rounded-full">
                       {item.badge}
@@ -173,7 +194,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="w-full py-3 rounded-lg bg-gradient-to-r from-[#802a32] to-[#591b22] text-[#fef9c3] font-semibold text-center border border-[#d4af37]/40 flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-5 h-5 text-[#fef08a]" />
-            <span className="font-bengali text-base">পোস্টার তৈরি করুন</span>
+            <span className={`${language === 'bn' ? 'font-bengali' : 'font-sans'} text-base`}>
+              {t('nav.create.cta')}
+            </span>
           </button>
         </div>
       )}

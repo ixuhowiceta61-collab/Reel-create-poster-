@@ -3,6 +3,7 @@ import { PostcardTemplate } from '../types';
 import { getVintageArtworkSvg } from '../utils/artworks';
 import { isFavorite, toggleFavorite } from '../utils/favorites';
 import { Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface PosterCardProps {
   template: PostcardTemplate;
@@ -14,6 +15,7 @@ export const PosterCard: React.FC<PosterCardProps> = ({
   onUseTemplate,
 }) => {
   const [fav, setFav] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     setFav(isFavorite('postcards', template.id));
@@ -26,6 +28,26 @@ export const PosterCard: React.FC<PosterCardProps> = ({
   };
 
   const artworkSvg = getVintageArtworkSvg(template.artworkType, template.themeColor);
+
+  const displayTitle =
+    language === 'bn'
+      ? `${template.titleBn} (${template.title})`
+      : `${template.title} (${template.titleBn})`;
+
+  const displayQuote =
+    language === 'bn'
+      ? template.defaultQuote
+      : template.defaultQuoteEn || template.defaultQuote;
+
+  const displayCategory =
+    language === 'bn'
+      ? template.category
+      : template.categoryEn || template.category;
+
+  const displayDate =
+    language === 'bn'
+      ? template.defaultDate || 'ভিন্টেজ স্মৃতি'
+      : template.defaultDateEn || template.defaultDate || 'Vintage Memories';
 
   return (
     <div className="group relative bg-[#18120e] rounded-2xl border border-[#3b2d24] hover:border-[#d4af37]/60 overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-black/60 transition-all duration-300 flex flex-col justify-between">
@@ -41,8 +63,8 @@ export const PosterCard: React.FC<PosterCardProps> = ({
 
         {/* Category Pill badge */}
         <div className="absolute top-3 left-3 z-10">
-          <span className="px-2.5 py-1 rounded-full text-xs font-bengali font-semibold bg-[#130f0d]/85 text-[#fef08a] border border-[#d4af37]/40 shadow-md backdrop-blur-sm">
-            {template.category}
+          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#130f0d]/85 text-[#fef08a] border border-[#d4af37]/40 shadow-md backdrop-blur-sm">
+            {displayCategory}
           </span>
         </div>
 
@@ -56,7 +78,15 @@ export const PosterCard: React.FC<PosterCardProps> = ({
               ? 'bg-[#802a32] text-[#f87171] border border-[#f87171]'
               : 'bg-[#18120e]/80 text-[#d1c2af] hover:text-[#f87171] border border-[#443329] hover:border-[#802a32]'
           }`}
-          title={fav ? 'পছন্দ থেকে সরান' : 'পছন্দে যোগ করুন'}
+          title={
+            language === 'bn'
+              ? fav
+                ? 'পছন্দ থেকে সরান'
+                : 'পছন্দে যোগ করুন'
+              : fav
+              ? 'Remove from favorites'
+              : 'Add to favorites'
+          }
           aria-label="Add to favorites"
         >
           <Heart className={`w-4 h-4 ${fav ? 'fill-[#f87171]' : ''}`} />
@@ -73,29 +103,29 @@ export const PosterCard: React.FC<PosterCardProps> = ({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-[#fef9c3] font-bold text-base sm:text-lg group-hover:text-[#fef08a] transition-colors line-clamp-1">
-              {template.titleBn} ({template.title})
+              {displayTitle}
             </h3>
           </div>
 
-          <p className="font-bengali text-xs sm:text-sm text-[#c5b5a2] leading-relaxed line-clamp-2 italic">
-            “{template.defaultQuote}”
+          <p className="text-xs sm:text-sm text-[#c5b5a2] leading-relaxed line-clamp-2 italic">
+            “{displayQuote}”
           </p>
         </div>
 
         {/* Bottom Actions */}
         <div className="pt-3 border-t border-[#2a1e17] flex items-center justify-between gap-2">
-          <span className="text-[11px] text-[#8c7b6c] font-bengali">
-            {template.defaultDate || 'ভিন্টেজ স্মৃতি'}
+          <span className="text-[11px] text-[#8c7b6c]">
+            {displayDate}
           </span>
 
           <button
             type="button"
             id={`use-template-btn-${template.id}`}
             onClick={() => onUseTemplate(template)}
-            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#802a32] to-[#591b22] hover:from-[#9c2d3a] hover:to-[#6d2028] text-[#fef9c3] text-xs sm:text-sm font-bengali font-semibold border border-[#d4af37]/40 hover:border-[#d4af37] shadow-md shadow-[#802a32]/25 hover:shadow-[#d4af37]/20 transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#802a32] to-[#591b22] hover:from-[#9c2d3a] hover:to-[#6d2028] text-[#fef9c3] text-xs sm:text-sm font-semibold border border-[#d4af37]/40 hover:border-[#d4af37] shadow-md shadow-[#802a32]/25 hover:shadow-[#d4af37]/20 transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#fef08a]" />
-            <span>ব্যবহার করুন</span>
+            <span>{language === 'bn' ? 'ব্যবহার করুন' : 'Use Template'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

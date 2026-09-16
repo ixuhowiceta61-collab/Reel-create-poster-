@@ -1,6 +1,7 @@
 import React from 'react';
 import { categories } from '../data/categories';
 import { Layers, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CategorySectionProps {
   selectedCategory: string | null;
@@ -13,6 +14,8 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   onSelectCategory,
   onViewAllCategories,
 }) => {
+  const { language, t } = useLanguage();
+
   return (
     <section className="py-12 border-b border-[#291e17] bg-[#110d0b]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,11 +25,11 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               <Layers className="w-3.5 h-3.5" />
               <span>COLLECTIONS & THEMES</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold font-bengali text-[#fef9c3]">
-              ক্যাটাগরি বেছে নিন
+            <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#fef9c3]">
+              {t('cat.title')}
             </h2>
-            <p className="text-xs sm:text-sm text-[#a39281] font-bengali mt-1">
-              আপনার হৃদয়ের অনুভূতির সাথে মেলানো পোস্টার থিম খুঁজে নিন
+            <p className="text-xs sm:text-sm text-[#a39281] mt-1">
+              {t('cat.subtitle')}
             </p>
           </div>
 
@@ -34,9 +37,9 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
             <button
               id="view-all-categories-btn"
               onClick={onViewAllCategories}
-              className="text-xs sm:text-sm text-[#d4af37] hover:text-[#fef08a] flex items-center gap-1.5 font-bengali transition-colors cursor-pointer"
+              className="text-xs sm:text-sm text-[#d4af37] hover:text-[#fef08a] flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <span>সবগুলো ক্যাটাগরি দেখুন</span>
+              <span>{t('cat.view_all')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           )}
@@ -45,7 +48,10 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         {/* Categories Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
           {categories.map((cat) => {
-            const isSelected = selectedCategory === cat.nameBn;
+            const isSelected = selectedCategory === cat.nameBn || selectedCategory === cat.nameEn;
+            const primaryName = language === 'bn' ? cat.nameBn : cat.nameEn;
+            const secondaryName = language === 'bn' ? cat.nameEn : cat.nameBn;
+
             return (
               <button
                 key={cat.id}
@@ -61,11 +67,11 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                   {cat.icon}
                 </div>
                 <div>
-                  <div className="font-bengali font-semibold text-sm leading-tight group-hover:text-[#fef08a]">
-                    {cat.nameBn}
+                  <div className="font-semibold text-sm leading-tight group-hover:text-[#fef08a]">
+                    {primaryName}
                   </div>
                   <div className="text-[10px] text-[#8c7b6c] font-mono mt-0.5 truncate">
-                    {cat.nameEn}
+                    {secondaryName}
                   </div>
                 </div>
               </button>

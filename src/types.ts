@@ -36,22 +36,30 @@ export interface AspectRatioConfig {
   icon: string;
 }
 
+export type Language = 'bn' | 'en';
+
 export interface PostcardTemplate {
   id: string;
   title: string;
   titleBn: string;
   category: string;
+  categoryEn?: string;
   image: string;
   artworkType: string;
   defaultQuote: string;
+  defaultQuoteEn?: string;
   defaultRecipient?: string;
+  defaultRecipientEn?: string;
   defaultSender?: string;
+  defaultSenderEn?: string;
   defaultDate?: string;
+  defaultDateEn?: string;
   textPosition: TextPosition;
   defaultTypography: TypographyStyle;
   borderStyle: BorderStyle;
   themeColor: string;
   tags: string[];
+  tagsEn?: string[];
   isPopular?: boolean;
   isNew?: boolean;
   collection?: 'romantic' | 'rainy' | 'letter' | 'classic';
@@ -60,10 +68,15 @@ export interface PostcardTemplate {
 export interface RomanticQuote {
   id: string;
   text: string;
+  textEn?: string;
   author?: string;
+  authorEn?: string;
   category: string;
+  categoryEn?: string;
   mood?: string;
+  moodEn?: string;
   tags: string[];
+  tagsEn?: string[];
 }
 
 export interface GalleryItem {
