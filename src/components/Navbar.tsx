@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ActivePage } from '../types';
 import { getFavorites } from '../utils/favorites';
-import { Heart, Sparkles, Search, Menu, X, Image as ImageIcon, BookOpen, Home, Mail, Video, Feather } from 'lucide-react';
+import { Heart, Sparkles, Search, Menu, X, Image as ImageIcon, BookOpen, Home, Mail, Video, Feather, Film, PlusCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
 
@@ -9,12 +9,14 @@ interface NavbarProps {
   activePage: ActivePage;
   setActivePage: (page: ActivePage) => void;
   onOpenSearch: () => void;
+  onOpenVideoModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activePage,
   setActivePage,
   onOpenSearch,
+  onOpenVideoModal,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(0);
@@ -35,6 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems = [
     { id: 'home' as ActivePage, labelBn: 'হোম', labelEn: 'Home', icon: Home },
+    { id: 'video' as ActivePage, labelBn: 'ভিডিও প্লেয়ার', labelEn: 'Video', icon: Film },
     { id: 'reels' as ActivePage, labelBn: 'রিলস ভিডিও', labelEn: 'Reels', icon: Video },
     { id: 'letter' as ActivePage, labelBn: 'ভিন্টেজ প্রেমপত্র', labelEn: 'Letter', icon: Feather },
     { id: 'create' as ActivePage, labelBn: 'পোস্টার ইমেজ', labelEn: 'Poster', icon: ImageIcon },
@@ -123,6 +126,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               </kbd>
             </button>
 
+            {/* Add Video / Preview Quick Action Button */}
+            <button
+              type="button"
+              id="navbar-add-video-btn"
+              onClick={onOpenVideoModal || (() => handleNavClick('video'))}
+              className="p-2 sm:px-3 sm:py-2.5 rounded-lg text-[#fef08a] bg-[#1e1511] hover:bg-[#2e1f18] border border-[#d4af37]/40 hover:border-[#d4af37] transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bengali font-semibold shadow"
+              title={language === 'bn' ? 'ভিডিও যোগ করুন অথবা প্রিভিউ দেখুন' : 'Add Video / Preview'}
+            >
+              <Film className="w-4 h-4 text-[#d4af37]" />
+              <span className="hidden sm:inline">
+                {language === 'bn' ? 'ভিডিও প্রিভিউ' : 'Add Video'}
+              </span>
+            </button>
+
             {/* Create Poster Primary CTA */}
             <button
               id="navbar-create-poster-cta"
@@ -186,6 +203,34 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               );
             })}
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              id="mobile-nav-add-video-btn"
+              onClick={() => {
+                if (onOpenVideoModal) {
+                  onOpenVideoModal();
+                } else {
+                  handleNavClick('video');
+                }
+              }}
+              className="py-2.5 px-3 rounded-lg bg-[#241712] hover:bg-[#322019] text-[#fef08a] font-bengali font-semibold text-center border border-[#d4af37]/40 flex items-center justify-center gap-1.5 cursor-pointer text-xs"
+            >
+              <Film className="w-4 h-4 text-[#d4af37]" />
+              <span>{language === 'bn' ? 'ভিডিও যোগ / প্রিভিউ' : 'Add Video'}</span>
+            </button>
+
+            <button
+              type="button"
+              id="mobile-nav-reels-btn"
+              onClick={() => handleNavClick('reels')}
+              className="py-2.5 px-3 rounded-lg bg-[#241712] hover:bg-[#322019] text-[#fef08a] font-bengali font-semibold text-center border border-[#d4af37]/40 flex items-center justify-center gap-1.5 cursor-pointer text-xs"
+            >
+              <Video className="w-4 h-4 text-[#d4af37]" />
+              <span>{language === 'bn' ? 'রিলস স্টুডিও' : 'Reels Studio'}</span>
+            </button>
           </div>
 
           <button

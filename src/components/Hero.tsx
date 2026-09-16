@@ -2,7 +2,7 @@ import React from 'react';
 import { postcards } from '../data/postcards';
 import { PosterPreview } from './PosterPreview';
 import { PostcardTemplate, CustomTextStyle } from '../types';
-import { Sparkles, Image as ImageIcon, ArrowRight, CheckCircle2, ShieldCheck, Zap, Video, Feather } from 'lucide-react';
+import { Sparkles, Image as ImageIcon, ArrowRight, CheckCircle2, ShieldCheck, Zap, Video, Feather, Film, PlaySquare } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
@@ -11,6 +11,8 @@ interface HeroProps {
   onUseTemplate: (template: PostcardTemplate) => void;
   onOpenReels?: () => void;
   onOpenLetter?: () => void;
+  onOpenVideoModal?: () => void;
+  onOpenVideoStudio?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -19,6 +21,8 @@ export const Hero: React.FC<HeroProps> = ({
   onUseTemplate,
   onOpenReels,
   onOpenLetter,
+  onOpenVideoModal,
+  onOpenVideoStudio,
 }) => {
   const { language, t } = useLanguage();
   const showcaseTemplate = postcards[0]; // Rainy Love
@@ -98,8 +102,23 @@ export const Hero: React.FC<HeroProps> = ({
               </div>
             </div>
 
-            {/* Creation Modalities: Reels Video / Love Letter / Postcard Image */}
-            <div className="grid grid-cols-3 gap-2.5 max-w-xl">
+            {/* Creation Modalities: Video Player / Reels Video / Love Letter / Postcard Image */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl">
+              <button
+                type="button"
+                id="hero-mode-video-btn"
+                onClick={onOpenVideoModal || onOpenVideoStudio || onStartCreating}
+                className="p-3 rounded-xl bg-[#231713] hover:bg-[#322019] border border-[#d4af37]/60 hover:border-[#d4af37] text-left transition-all cursor-pointer group shadow-lg shadow-black/40"
+              >
+                <div className="flex items-center gap-1.5 text-xs text-[#fef08a] font-bold">
+                  <Film className="w-3.5 h-3.5 text-[#d4af37] group-hover:scale-110 transition-transform" />
+                  <span>{language === 'bn' ? 'ভিডিও প্রিভিউ' : 'Add Video'}</span>
+                </div>
+                <div className="text-[10px] text-[#cbb8a3] mt-0.5 font-sans">
+                  {language === 'bn' ? 'YouTube ও MP4' : 'YouTube & MP4'}
+                </div>
+              </button>
+
               <button
                 type="button"
                 id="hero-mode-reels-btn"
@@ -108,10 +127,10 @@ export const Hero: React.FC<HeroProps> = ({
               >
                 <div className="flex items-center gap-1.5 text-xs text-[#fef08a] font-bold">
                   <Video className="w-3.5 h-3.5 text-[#d4af37] group-hover:scale-110 transition-transform" />
-                  <span>{language === 'bn' ? 'রিলস ভিডিও' : 'Reels Video'}</span>
+                  <span>{language === 'bn' ? 'রিলস ভিডিও' : 'Reels'}</span>
                 </div>
                 <div className="text-[10px] text-[#9c8976] mt-0.5">
-                  {language === 'bn' ? '9:16 অ্যানিমেটেড রিল' : '9:16 Animated Reels'}
+                  {language === 'bn' ? '৯:১৬ রিলস' : '9:16 Vertical'}
                 </div>
               </button>
 
@@ -123,10 +142,10 @@ export const Hero: React.FC<HeroProps> = ({
               >
                 <div className="flex items-center gap-1.5 text-xs text-[#fef08a] font-bold">
                   <Feather className="w-3.5 h-3.5 text-[#d4af37] group-hover:scale-110 transition-transform" />
-                  <span>{language === 'bn' ? 'প্রেমপত্র (Letter)' : 'Love Letter'}</span>
+                  <span>{language === 'bn' ? 'প্রেমপত্র' : 'Letter'}</span>
                 </div>
                 <div className="text-[10px] text-[#9c8976] mt-0.5">
-                  {language === 'bn' ? 'পার্চমেন্ট ও মোমের মোহর' : 'Parchment & Wax Seal'}
+                  {language === 'bn' ? 'পার্চমেন্ট মোহর' : 'Wax Seal'}
                 </div>
               </button>
 
@@ -138,33 +157,43 @@ export const Hero: React.FC<HeroProps> = ({
               >
                 <div className="flex items-center gap-1.5 text-xs text-[#fef08a] font-bold">
                   <ImageIcon className="w-3.5 h-3.5 text-[#d4af37] group-hover:scale-110 transition-transform" />
-                  <span>{language === 'bn' ? 'পোস্টার ইমেজ' : 'Poster Image'}</span>
+                  <span>{language === 'bn' ? 'পোস্টার' : 'Poster'}</span>
                 </div>
                 <div className="text-[10px] text-[#9c8976] mt-0.5">
-                  {language === 'bn' ? 'HD ছবি ও পোস্টকার্ড' : 'HD Postcard Art'}
+                  {language === 'bn' ? 'HD ফ্রেম' : 'HD Frames'}
                 </div>
               </button>
             </div>
 
             {/* Call to Actions */}
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
                 id="hero-primary-cta"
                 onClick={onStartCreating}
-                className="py-3.5 px-7 rounded-xl bg-gradient-to-r from-[#802a32] via-[#9e2a3b] to-[#591b22] text-[#fef9c3] font-bold text-base border border-[#d4af37]/50 shadow-xl shadow-[#802a32]/30 hover:shadow-[#d4af37]/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                className="py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#802a32] via-[#9e2a3b] to-[#591b22] text-[#fef9c3] font-bold text-sm sm:text-base border border-[#d4af37]/50 shadow-xl shadow-[#802a32]/30 hover:shadow-[#d4af37]/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Sparkles className="w-5 h-5 text-[#fef08a] animate-spin" />
+                <Sparkles className="w-4 h-4 text-[#fef08a] animate-spin" />
                 <span>{language === 'bn' ? 'পোস্টার তৈরি করুন' : 'Start Creating Poster'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
+                type="button"
+                id="hero-add-video-cta"
+                onClick={onOpenVideoModal || onOpenVideoStudio || onStartCreating}
+                className="py-3.5 px-5 rounded-xl bg-[#221611] hover:bg-[#301e18] text-[#fef08a] font-semibold text-sm sm:text-base border border-[#d4af37]/50 hover:border-[#d4af37] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/50 group"
+              >
+                <Film className="w-4 h-4 text-[#d4af37] group-hover:scale-110 transition-transform" />
+                <span>{language === 'bn' ? 'ভিডিও যোগ / প্রিভিউ' : 'Add Video / Preview'}</span>
+              </button>
+
+              <button
                 id="hero-secondary-cta"
                 onClick={onExploreGallery}
-                className="py-3.5 px-6 rounded-xl bg-[#1c1410] hover:bg-[#281d18] text-[#e3d7c3] hover:text-[#fef08a] font-semibold text-base border border-[#3b2d24] hover:border-[#d4af37]/50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="py-3.5 px-5 rounded-xl bg-[#1c1410] hover:bg-[#281d18] text-[#e3d7c3] hover:text-[#fef08a] font-semibold text-sm border border-[#3b2d24] hover:border-[#d4af37]/50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <ImageIcon className="w-5 h-5 text-[#d4af37]" />
-                <span>{language === 'bn' ? 'Vintage Gallery দেখুন' : 'Explore Vintage Gallery'}</span>
+                <ImageIcon className="w-4 h-4 text-[#d4af37]" />
+                <span>{language === 'bn' ? 'Vintage Gallery' : 'Gallery'}</span>
               </button>
             </div>
 

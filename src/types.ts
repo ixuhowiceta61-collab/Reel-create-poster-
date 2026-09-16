@@ -137,6 +137,7 @@ export interface PosterFormState {
 
 export type ActivePage =
   | 'home'
+  | 'video'
   | 'reels'
   | 'letter'
   | 'create'
@@ -148,3 +149,20 @@ export type ActivePage =
   | 'privacy'
   | 'terms'
   | 'contact';
+
+export type VideoSourceType = 'youtube' | 'direct' | 'uploaded';
+
+export interface VideoItem {
+  id: string;
+  title: string;
+  titleBn?: string;
+  sourceType: VideoSourceType;
+  url: string;
+  originalFileName?: string;
+  fileSize?: string;
+  duration?: string;
+  aspectRatio?: '16:9' | '9:16' | '1:1' | '4:3';
+  filterEffect?: 'none' | 'sepia' | 'bw' | 'film-grain' | 'vhs' | 'warm-vintage';
+  overlayQuote?: string;
+  overlayAuthor?: string;
+}

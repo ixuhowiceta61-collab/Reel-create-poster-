@@ -20,6 +20,11 @@ import { VintageGalleryPage } from './pages/VintageGalleryPage';
 import { CategoriesPage } from './pages/CategoriesPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { StaticPages } from './pages/StaticPages';
+import { VideoStudioPage } from './pages/VideoStudioPage';
+
+// Components & Modals
+import { AddVideoModal } from './components/AddVideoModal';
+import { ResponsiveVideoPlayer } from './components/ResponsiveVideoPlayer';
 
 // Icons & Data
 import { postcards } from './data/postcards';
@@ -47,6 +52,10 @@ export default function App() {
   const [selectedQuoteForGen, setSelectedQuoteForGen] = useState<RomanticQuote | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [homeFeaturedVideo, setHomeFeaturedVideo] = useState<string>(
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+  );
 
   // Parse URL search parameters on initial load (supports sitemap deep links)
   useEffect(() => {
@@ -84,6 +93,7 @@ export default function App() {
 
       const validPages: ActivePage[] = [
         'home',
+        'video',
         'create',
         'reels',
         'letter',
@@ -153,6 +163,7 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenVideoModal={() => setIsVideoModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -171,6 +182,11 @@ export default function App() {
               }}
               onOpenLetter={() => {
                 setActivePage('letter');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenVideoModal={() => setIsVideoModalOpen(true)}
+              onOpenVideoStudio={() => {
+                setActivePage('video');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               onExploreGallery={() => {
@@ -198,6 +214,85 @@ export default function App() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             />
+
+            {/* Add Video / Preview Interactive Showcase Section on Homepage */}
+            <section className="py-16 bg-[#110c09] border-y border-[#34251e] relative overflow-hidden">
+              <div className="absolute top-1/2 -left-20 w-80 h-80 bg-[#802a32]/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 -right-20 w-80 h-80 bg-[#d4af37]/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                  {/* Left Column: Information & Actions */}
+                  <div className="lg:col-span-5 space-y-5 text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271914] border border-[#d4af37]/40 text-xs font-serif text-[#fef08a] font-semibold tracking-wider uppercase">
+                      <span>🎬</span>
+                      <span>VIDEO SUPPORT & PREVIEW</span>
+                    </div>
+
+                    <h2 className="text-2xl sm:text-3xl font-extrabold font-bengali text-[#fef9c3] leading-snug">
+                      ভিডিও যোগ করুন ও ভিন্টেজ থিমে উপভোগ করুন
+                    </h2>
+
+                    <p className="text-xs sm:text-sm text-[#bcaaa0] font-bengali leading-relaxed">
+                      যে কোনো YouTube লিংক পেস্ট করুন অথবা আপনার ফোন/কম্পিউটার থেকে MP4/WebM ভিডিও আপলোড করে তাৎক্ষণিক প্রিভিউ দেখুন। রেট্রো ফিল্ম ফিল্টার, রোমান্টিক সাবটাইটেল এবং ফ্রেম ক্যাপচারের সুবিধা।
+                    </p>
+
+                    <div className="space-y-2.5 pt-1">
+                      <div className="flex items-center gap-2 text-xs text-[#d1c2af] font-bengali">
+                        <span className="w-5 h-5 rounded-full bg-[#802a32] text-[#fef08a] flex items-center justify-center text-[10px] font-bold">✓</span>
+                        <span>YouTube URL এবং সরাসরি MP4/WebM ভিডিও ফাইল সাপোর্ট</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-[#d1c2af] font-bengali">
+                        <span className="w-5 h-5 rounded-full bg-[#802a32] text-[#fef08a] flex items-center justify-center text-[10px] font-bold">✓</span>
+                        <span>১৬:৯, ৯:১৬ রিলস, ৪:৩ রেট্রো টিভি ও ১:১ স্কয়ার ফরম্যাট</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-[#d1c2af] font-bengali">
+                        <span className="w-5 h-5 rounded-full bg-[#802a32] text-[#fef08a] flex items-center justify-center text-[10px] font-bold">✓</span>
+                        <span>ভিডিও ফ্রেম ক্যাপচার করে পোস্টকার্ড তৈরি বা ডাউনলোড</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        id="home-open-video-modal-btn"
+                        onClick={() => setIsVideoModalOpen(true)}
+                        className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#802a32] via-[#942938] to-[#591b22] text-[#fef9c3] font-bengali font-bold text-xs sm:text-sm border border-[#d4af37]/40 shadow-lg shadow-[#802a32]/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <span>🎬 নতুন ভিডিও যোগ / প্রিভিউ</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        id="home-open-video-studio-btn"
+                        onClick={() => {
+                          setActivePage('video');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="px-5 py-3 rounded-xl bg-[#1e1511] hover:bg-[#2c1e18] text-[#fef08a] font-bengali font-semibold text-xs sm:text-sm border border-[#3f2f25] hover:border-[#d4af37]/50 transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <span>থিয়েটার স্টুডিও খুলুন</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Live Responsive Player Preview on Homepage */}
+                  <div className="lg:col-span-7">
+                    <div className="p-2 sm:p-3 rounded-2xl bg-[#19110d] border border-[#3b2b20] shadow-2xl">
+                      <ResponsiveVideoPlayer
+                        url={homeFeaturedVideo}
+                        title="Vintage Window Reverie"
+                        aspectRatio="16:9"
+                        initialFilter="warm-vintage"
+                        overlayQuote="ভালোবাসা রয়ে যায় প্রতিটি বৃষ্টির ফোঁটায় ও স্মৃতির সুরভীতে..."
+                        overlayAuthor="— রিল ক্রিয়েট পোস্টার"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
 
             {/* Emotional Bengali Vintage Quote Banner */}
             <section className="py-16 bg-gradient-to-r from-[#18110e] via-[#241518] to-[#18110e] border-y border-[#34251e] relative overflow-hidden">
@@ -296,6 +391,20 @@ export default function App() {
           </div>
         )}
 
+        {/* Dedicated Video Studio & Player View */}
+        {activePage === 'video' && (
+          <VideoStudioPage
+            onOpenReelsStudio={() => {
+              setActivePage('reels');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenGeneratorWithSnapshot={() => {
+              setActivePage('create');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
+
         {/* Generator View */}
         {activePage === 'create' && (
           <PosterGenerator
@@ -370,6 +479,17 @@ export default function App() {
         onSelectPostcard={handleUseTemplate}
         onSelectQuote={handleUseQuote}
         onSelectGallery={handleSelectGalleryFromSearch}
+      />
+
+      {/* Add Video / Preview Modal (accessible globally) */}
+      <AddVideoModal
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        onSelectVideo={(url) => {
+          setHomeFeaturedVideo(url);
+          setActivePage('video');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       {/* Global Footer */}
