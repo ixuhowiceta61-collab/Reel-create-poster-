@@ -58,8 +58,8 @@ function detectInitialLanguage(): string {
     }
   } catch {}
 
-  // 4. Default for all other international visitors
-  return 'en';
+  // 4. Default to Bangla (বাংলা) for visitors
+  return 'bn';
 }
 
 // Function to trigger Google Translate dynamic auto-translation on the page
@@ -114,7 +114,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Des sentiments vintage, créés pour l’amour moderne',
     de: 'Vintage-Gefühle, geschaffen für moderne Liebe',
     fa: 'احساسات قدیمی، ساخته شده برای عشق امروزی',
-    he: 'רגשות וינטג׳, שנוצרו לאהבה מודרנית',
   },
   'brand.description': {
     bn: 'আপনার প্রিয় মানুষটির জন্য তৈরি করুন একটি সুন্দর Vintage Poster ও প্রেমের চিঠি।',
@@ -141,7 +140,6 @@ export const translations: Record<string, Record<string, string>> = {
     ru: 'Главная',
     tr: 'Ana Sayfa',
     fa: 'خانه',
-    he: 'בית',
   },
   'nav.reels': {
     bn: 'রিলস ভিডিও',
@@ -153,7 +151,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Studio Reels',
     de: 'Reels Studio',
     fa: 'استودیو ریلز',
-    he: 'סטודיו רילס',
   },
   'nav.letter': {
     bn: 'ভিন্টেজ প্রেমপত্র',
@@ -165,7 +162,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Lettre d’amour',
     de: 'Liebesbrief',
     fa: 'نامه عاشقانه',
-    he: 'מכתב אהבה',
   },
   'nav.create': {
     bn: 'পোস্টার তৈরি',
@@ -177,7 +173,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Créer une affiche',
     de: 'Poster erstellen',
     fa: 'ساخت پوستر',
-    he: 'צור פוסטר',
   },
   'nav.postcards': {
     bn: 'পোস্টকার্ড ফ্রেম',
@@ -189,7 +184,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Cartes postales',
     de: 'Postkarten',
     fa: 'کارت‌پستال‌ها',
-    he: 'גלויות',
   },
   'nav.quotes': {
     bn: 'উক্তি সংগ্রহ',
@@ -201,7 +195,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Citations d’amour',
     de: 'Romantische Zitate',
     fa: 'نقل‌قول‌های عاشقانه',
-    he: 'ציטוטים רומנטיים',
   },
   'nav.gallery': {
     bn: 'গ্যালারি',
@@ -216,7 +209,6 @@ export const translations: Record<string, Record<string, string>> = {
     ru: 'Галерея',
     tr: 'Galeri',
     fa: 'گالری',
-    he: 'גלריה',
   },
   'nav.categories': {
     bn: 'ক্যাটাগরি',
@@ -228,7 +220,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Catégories',
     de: 'Kategorien',
     fa: 'دسته‌بندی‌ها',
-    he: 'קטגוריות',
   },
   'nav.favorites': {
     bn: 'পছন্দ',
@@ -240,7 +231,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Favoris',
     de: 'Favoriten',
     fa: 'علاقه‌مندی‌ها',
-    he: 'מועדפים',
   },
   'nav.search': {
     bn: 'অনুসন্ধান',
@@ -252,7 +242,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Rechercher',
     de: 'Suchen',
     fa: 'جستجو',
-    he: 'חיפוש',
   },
   'nav.search.placeholder': {
     bn: 'উক্তি, পোস্টার বা বিষয় খুঁজুন... (Ctrl+K)',
@@ -274,7 +263,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Créer une affiche',
     de: 'Poster gestalten',
     fa: 'پوستر بسازید',
-    he: 'צור פוסטר עכשיו',
   },
 
   // Hero Section
@@ -298,7 +286,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: '“Émotions d’autrefois,',
     de: '“Vintage-Gefühle,',
     fa: '“احساسات روزگاران کهن،',
-    he: '“רגשות של פעם,',
   },
   'hero.headline.part2': {
     bn: 'আজকের ভালোবাসার জন্য।”',
@@ -310,7 +297,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Pour l’amour d’aujourd’hui.”',
     de: 'Für die moderne Liebe.”',
     fa: 'برای عشق دوران معاصر.”',
-    he: 'לאהבה של ימינו.”',
   },
   'hero.subheadline': {
     bn: 'আপনার মনের অপ্রকাশিত অনুভূতিগুলো রূপ দিন ১৯শ শতকের ভিন্টেজ পোস্টকার্ড, ৯:১৬ অ্যানিমেটেড রিলস ভিডিও ও হাতে লেখা প্রেমপত্রে। সম্পূর্ণ বিনামূল্যে এবং কোনো ওয়াটারমার্ক ছাড়া।',
@@ -332,7 +318,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Commencer l’affiche',
     de: 'Poster erstellen',
     fa: 'شروع ساخت پوستر',
-    he: 'התחל לעצב פוסטר',
   },
   'hero.btn.reels': {
     bn: '৯:১৬ রিলস ভিডিও',
@@ -344,7 +329,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Studio Reels 9:16',
     de: '9:16 Reels Studio',
     fa: 'استودیو ریلز ۹:۱۶',
-    he: 'סטודיו רילס 9:16',
   },
   'hero.btn.letter': {
     bn: 'ভিন্টেজ প্রেমপত্র',
@@ -356,7 +340,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Lettre d’amour vintage',
     de: 'Vintage-Liebesbrief',
     fa: 'نامه عاشقانه کهن',
-    he: 'מכתב אהבה עתיק',
   },
   'hero.btn.explore': {
     bn: 'পোস্টকার্ড দেখুন',
@@ -368,7 +351,6 @@ export const translations: Record<string, Record<string, string>> = {
     fr: 'Explorer les cartes',
     de: 'Postkarten entdecken',
     fa: 'مشاهده کارت‌پستال‌ها',
-    he: 'גלה גלויות',
   },
   'hero.feat.free_hd': {
     bn: '১০০% ফ্রি আল্ট্রা-HD এক্সপোর্ট',

@@ -2,11 +2,11 @@ import { LanguageOption } from '../types';
 export type { LanguageOption };
 
 export const GLOBAL_LANGUAGES: LanguageOption[] = [
-  // Top & Popular
-  { code: 'bn', name: 'Bengali', nativeName: 'বাংলা', flag: '🇧🇩', region: 'Asia', popular: true },
+  // Primary Language
+  { code: 'bn', name: 'Bangla (Bengali)', nativeName: 'বাংলা', flag: '🇧🇩', region: 'Bangladesh', popular: true },
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸', region: 'Global', popular: true },
-  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', region: 'Europe/Americas', popular: true },
   { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', isRtl: true, region: 'Middle East', popular: true },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', region: 'Europe/Americas', popular: true },
   { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳', region: 'Asia', popular: true },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو', flag: '🇵🇰', isRtl: true, region: 'Asia', popular: true },
   { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', region: 'Europe', popular: true },
@@ -21,7 +21,6 @@ export const GLOBAL_LANGUAGES: LanguageOption[] = [
   
   // RTL Languages
   { code: 'fa', name: 'Persian (Farsi)', nativeName: 'فارسی', flag: '🇮🇷', isRtl: true, region: 'Middle East', popular: true },
-  { code: 'he', name: 'Hebrew', nativeName: 'עברית', flag: '🇮🇱', isRtl: true, region: 'Middle East', popular: true },
   
   // Other Major Global Languages
   { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: '🇮🇩', region: 'Asia', popular: false },
@@ -43,7 +42,7 @@ export const GLOBAL_LANGUAGES: LanguageOption[] = [
   { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી', flag: '🇮🇳', region: 'Asia', popular: false },
 ];
 
-export const RTL_LANGUAGES = new Set(['ar', 'he', 'ur', 'fa', 'ps', 'yi', 'sd']);
+export const RTL_LANGUAGES = new Set(['ar', 'ur', 'fa', 'ps', 'yi', 'sd']);
 
 export function isRtlLanguage(code: string): boolean {
   if (!code) return false;
