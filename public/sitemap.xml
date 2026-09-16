@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ============================================== -->
+  <!-- 1. CORE APPLICATION PAGES & STUDIOS           -->
+  <!-- ============================================== -->
+
+  <!-- Home / Main Vintage Poster Studio -->
+  <url>
+    <loc>https://reelcreateposter.com/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/logo.png</image:loc>
+      <image:title>Reel Create Poster - Vintage Poster Generator Logo</image:title>
+      <image:caption>পুরনো দিনের অনুভূতি, আজকের ভালোবাসার জন্য। ভিন্টেজ পোস্টার ও প্রেমপত্র জেনারেটর।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Create Poster Studio (Image Mode) -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=create</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Vintage Reels Video Creator (9:16 Video Studio) -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=reels</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Vintage Love Letter Generator (Classic Parchment & Wax Seal) -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=letter</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Postcards Library -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=postcards</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Bangla Romantic Quotes Library -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=quotes</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Vintage Love Gallery -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=gallery</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Poster Categories Directory -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=categories</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Legal & Information Pages -->
+  <url>
+    <loc>https://reelcreateposter.com/?page=privacy</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?page=terms</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?page=contact</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- ============================================== -->
+  <!-- 2. CATEGORY PAGES                             -->
+  <!-- ============================================== -->
+
+  <!-- বৃষ্টির প্রেম (Rainy Love & Monsoon) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=rainy</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- রোমান্টিক (Classic Romantic) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=romantic</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- বিরহ (Separation & Heartbreak) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=sad</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- রাতের অনুভূতি (Night & Moonlight) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=night</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Classic Vintage (রেট্রো ও নস্টালজিয়া) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=classic</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- প্রেমপত্র (Love Letters & Envelopes) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=letter</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Bengali Vintage (বাঙালি ঐতিহ্য) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=bengali</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- প্রেম (Pure Love) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=love</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- মিস করা (Missing You) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=missing</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- প্রপোজ (Proposal & Commitment) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=propose</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- একতরফা প্রেম (Unrequited Love) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=unrequited</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Anniversary (বিবাহবার্ষিকী) -->
+  <url>
+    <loc>https://reelcreateposter.com/?category=anniversary</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ============================================== -->
+  <!-- 3. VINTAGE POSTCARD TEMPLATES (IMAGE SEARCH)   -->
+  <!-- ============================================== -->
+
+  <!-- Template vp001: Rainy Love (বৃষ্টির প্রেম) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp001</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp001.webp</image:loc>
+      <image:title>Rainy Love (বৃষ্টির প্রেম) - Vintage Poster Template</image:title>
+      <image:caption>তোমার কথা মনে পড়লে পুরনো দিনের চিঠিগুলোও যেন কথা বলে। মেঘের গর্জনে তোমার নাম ভেসে আসে।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp002: Vintage Rose Letter (শুকনো গোলাপের চিঠি) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp002</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp002.webp</image:loc>
+      <image:title>Vintage Rose Letter (শুকনো গোলাপের চিঠি) - Vintage Postcard Template</image:title>
+      <image:caption>ভালোবাসা কখনো পুরনো হয় না, বইয়ের ভাঁজে লুকিয়ে রাখা শুকনো গোলাপের মতো সৌরভ ছড়ায় চিরকাল।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp003: Railway Station Farewell (স্টেশনের শেষ বিদায়) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp003</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp003.webp</image:loc>
+      <image:title>Railway Station Farewell (স্টেশনের শেষ বিদায়) - Vintage Postcard Template</image:title>
+      <image:caption>কিছু মানুষ জীবনে আসে, থেকে যাওয়ার জন্য নয়—মনে থেকে যাওয়ার জন্য। ট্রেনের বাঁশির সুরে আজও বাজে তোমার কণ্ঠ।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp004: Moonlight over Lake (চাঁদের আলোয় ভেজা জল) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp004</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp004.webp</image:loc>
+      <image:title>Moonlight over Lake (চাঁদের আলোয় ভেজা জল) - Romantic Postcard Template</image:title>
+      <image:caption>তুমি কাছে না থেকেও আমার প্রতিটি রাতের গল্পের সবচেয়ে সুন্দর অংশ। জ্যোৎস্নার নীরবতায় শুধু তুমি আছো।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp005: Old Café Nostalgia (পুরনো ক্যাফের কোণ) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp005</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp005.webp</image:loc>
+      <image:title>Old Café Nostalgia (পুরনো ক্যাফের কোণ) - Classic Retro Template</image:title>
+      <image:caption>কফির ধোঁয়ায় আজও তোমার মিষ্টি হাসির প্রতিচ্ছবি খুঁজি। সেই টেবিলে বসলে মনে হয় তুমি ঠিক উল্টো পাশেই বসে আছো।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp006: Antique Love Letter (ডাকপিয়নের নীল খাম) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp006</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp006.webp</image:loc>
+      <image:title>Antique Love Letter (ডাকপিয়নের নীল খাম) - Love Letter Template</image:title>
+      <image:caption>তোমাকে পাওয়ার জন্য নয়, তোমাকে একদিন ভালোবেসেছিলাম—শুধু ভালোবাসার প্রয়োজনে।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp007: Sunset Riverboat (পদ্মার পড়ন্ত বিকেল) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp007</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp007.webp</image:loc>
+      <image:title>Sunset Riverboat (পদ্মার পড়ন্ত বিকেল) - Bengali Vintage Template</image:title>
+      <image:caption>নদীর বুক চিরে চলে যাওয়া নৌকার মতো আমার সমস্ত ভাবনা গিয়ে মেশে তোমার মোহনায়।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp008: Vintage Bicycle Blooms (বুনোফুলের সাইকেল) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp008</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp008.webp</image:loc>
+      <image:title>Vintage Bicycle Blooms (বুনোফুলের সাইকেল) - Romantic Spring Template</image:title>
+      <image:caption>যে পথ ধরে তুমি হেঁটে চলে যাও, সে পথে এক ঝুড়ি বুনোফুল নিয়ে দাঁড়িয়ে থাকতে আমার কোনো ক্লান্তি নেই।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp009: Gramophone Melodies (গ্রামোফোনের পুরোনো গান) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp009</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp009.webp</image:loc>
+      <image:title>Gramophone Melodies (গ্রামোফোনের পুরোনো গান) - Retro Music Template</image:title>
+      <image:caption>পুরনো গ্রামোফোনের খাঁজে খাঁজে যেমন গান আটকে থাকে, তেমনি আমার প্রতিটা নিঃশ্বাসে জড়িয়ে আছো তুমি।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp010: Candlelit Night Window (মোমের আলো ও জানালা) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp010</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp010.webp</image:loc>
+      <image:title>Candlelit Night Window (মোমের আলো ও জানালা) - Missing You Template</image:title>
+      <image:caption>একাকী রাতের এই মৃদু শিখাটি নিভে গেলেও তোমার প্রতি আমার হৃদয়ের প্রদীপ কখনো নিভবে না।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp011: Typewriter Confessions (টাইপরাইটারে জমা কথা) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp011</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp011.webp</image:loc>
+      <image:title>Typewriter Confessions (টাইপরাইটারে জমা কথা) - Vintage Typewriter Template</image:title>
+      <image:caption>মুখে যা বলতে পারিনি কোনোদিন, সেই সব অপ্রকাশিত অনুরাগের কথা এই টাইপরাইটারের খটখট শব্দে ফুটিয়ে তুলেছি।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp012: Streetlamp Serenade (ল্যাম্পপোস্টের মায়াবী আলো) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp012</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp012.webp</image:loc>
+      <image:title>Streetlamp Serenade (ল্যাম্পপোস্টের মায়াবী আলো) - Proposal Love Template</image:title>
+      <image:caption>এই কুয়াশাচ্ছন্ন শহরের সমস্ত ব্যস্ততা থেমে যাক, যদি সারাটা জীবন তোমার হাত ধরে এই ল্যাম্পপোস্টের নিচে দাঁড়িয়ে থাকা যায়।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp013: Bengal Rural Reverie (পল্লীবাংলার কদম তলা) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp013</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp013.webp</image:loc>
+      <image:title>Bengal Rural Reverie (পল্লীবাংলার কদম তলা) - Traditional Bengal Template</image:title>
+      <image:caption>বর্ষার প্রথম কদম ফুলটি তোমার খোপায় গুঁজে দেওয়ার প্রতিশ্রুতি আজও আমার বুকে সযত্নে লালন করি।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp014: Raindrops on Windowpane (ভিজে কাঁচে তোমার নাম) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp014</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp014.webp</image:loc>
+      <image:title>Raindrops on Windowpane (ভিজে কাঁচে তোমার নাম) - Monsoon Window Template</image:title>
+      <image:caption>বৃষ্টিভেজা জানালার কাঁচের গায়ে আঙুল দিয়ে তোমার নাম লিখি আর মুছি।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp015: One Sided Silence (একতরফা অনুভূতির কান্না) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp015</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp015.webp</image:loc>
+      <image:title>One Sided Silence (একতরফা অনুভূতির কান্না) - Silent Love Template</image:title>
+      <image:caption>তুমি জানো না, হয়তো কোনোদিন জানবেও না—কতটা গভীর হলে মানুষ কাউকে নিঃশব্দে ভালোবেসে যেতে পারে।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Template vp016: Golden Anniversary Promise (চিরদিনের প্রতিশ্রুতি) -->
+  <url>
+    <loc>https://reelcreateposter.com/?template=vp016</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://reelcreateposter.com/assets/postcards/vp016.webp</image:loc>
+      <image:title>Golden Anniversary Promise (চিরদিনের প্রতিশ্রুতি) - Wedding &amp; Anniversary Template</image:title>
+      <image:caption>হাত ধরে চলার এই পথচলা যত দীর্ঘ হচ্ছে, তোমাকে নতুন করে ভালোবাসার কারণগুলো ততই সুন্দর হয়ে উঠছে।</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============================================== -->
+  <!-- 4. ROMANTIC QUOTES                            -->
+  <!-- ============================================== -->
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q001</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q002</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q003</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q004</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q005</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q006</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q007</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q008</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q009</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q010</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q011</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q012</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q013</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q014</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q015</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q016</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q017</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q018</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q019</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q020</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q021</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://reelcreateposter.com/?quote=q022</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

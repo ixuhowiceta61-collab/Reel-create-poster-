@@ -1,0 +1,26 @@
+# Robots.txt for Reel Create Poster
+# Website: https://reelcreateposter.com/
+
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /logo.png
+Allow: /sitemap.xml
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+
+# Googlebot Image Crawler
+User-agent: Googlebot-Image
+Allow: /
+Allow: /assets/
+Allow: /logo.png
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# Canonical Host & Sitemap
+Host: https://reelcreateposter.com
+Sitemap: https://reelcreateposter.com/sitemap.xml

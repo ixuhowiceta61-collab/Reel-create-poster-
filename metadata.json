@@ -1,6 +1,6 @@
 {
   "name": "Reel Create Poster",
-  "description": "পুরনো দিনের অনুভূতি, আজকের ভালোবাসার জন্য। অনলাইনে তৈরি করুন ভিন্টেজ রিলস ভিডিও, প্রেমপত্র এবং পোস্টকার্ড ছবি।",
+  "description": "আপনার প্রিয় মানুষটির জন্য তৈরি করুন একটি সুন্দর Vintage Poster ও প্রেমের চিঠি।",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

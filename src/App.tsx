@@ -23,7 +23,23 @@ import { StaticPages } from './pages/StaticPages';
 
 // Icons & Data
 import { postcards } from './data/postcards';
+import { quotes } from './data/quotes';
 import { Sparkles, Heart, Clock, Download, ArrowRight, BookOpen, ShieldCheck } from 'lucide-react';
+
+const categoryQueryMap: Record<string, string> = {
+  rainy: 'বৃষ্টি',
+  romantic: 'রোমান্টিক',
+  sad: 'বিরহ',
+  night: 'রাতের অনুভূতি',
+  classic: 'Classic Vintage',
+  letter: 'প্রেমপত্র',
+  bengali: 'Bengali Vintage',
+  love: 'প্রেম',
+  missing: 'মিস করা',
+  propose: 'প্রপোজ',
+  unrequited: 'একতরফা প্রেম',
+  anniversary: 'Anniversary',
+};
 
 export default function App() {
   const [activePage, setActivePage] = useState<ActivePage>('home');
@@ -31,6 +47,62 @@ export default function App() {
   const [selectedQuoteForGen, setSelectedQuoteForGen] = useState<RomanticQuote | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Parse URL search parameters on initial load (supports sitemap deep links)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page') as ActivePage | null;
+      const categoryParam = params.get('category');
+      const templateParam = params.get('template');
+      const quoteParam = params.get('quote');
+
+      if (templateParam) {
+        const foundTemplate = postcards.find((p) => p.id.toLowerCase() === templateParam.toLowerCase());
+        if (foundTemplate) {
+          setSelectedTemplateForGen(foundTemplate);
+          setActivePage('create');
+          return;
+        }
+      }
+
+      if (quoteParam) {
+        const foundQuote = quotes.find((q) => q.id.toLowerCase() === quoteParam.toLowerCase());
+        if (foundQuote) {
+          setSelectedQuoteForGen(foundQuote);
+          setActivePage('create');
+          return;
+        }
+      }
+
+      if (categoryParam) {
+        const mappedCategory = categoryQueryMap[categoryParam.toLowerCase()] || categoryParam;
+        setSelectedCategory(mappedCategory);
+        setActivePage('categories');
+        return;
+      }
+
+      const validPages: ActivePage[] = [
+        'home',
+        'create',
+        'reels',
+        'letter',
+        'postcards',
+        'quotes',
+        'gallery',
+        'categories',
+        'favorites',
+        'privacy',
+        'terms',
+        'contact',
+      ];
+      if (pageParam && validPages.includes(pageParam)) {
+        setActivePage(pageParam);
+      }
+    } catch {
+      // Ignore URL parsing errors
+    }
+  }, []);
 
   // Keyboard shortcut Ctrl+K or Cmd+K to open search
   useEffect(() => {
