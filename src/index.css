@@ -73,3 +73,21 @@ html[dir="rtl"] .rtl-flip {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #5d4538;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Language Selector Popover - Full Show & Responsive Modal Display           */
+/* -------------------------------------------------------------------------- */
+.language-selector-popover {
+  display: flex;
+  flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .language-selector-popover:not(.rounded-none) {
+    max-height: 88vh !important;
+    width: calc(100vw - 20px) !important;
+  }
+}
+
+
